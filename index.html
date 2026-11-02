@@ -261,7 +261,7 @@ const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyRoe
 // Vul na publicatie van het aparte Apps Script de nieuwe /exec-URL hieronder in.
 const PUBLIC_REVIEWS_WEB_APP_URL = GOOGLE_SHEETS_WEB_APP_URL;
 
-async async function loadApprovedReviews() {
+async function loadApprovedReviews() {
   const list = document.getElementById("reviewsList");
   if (!list) return;
 
@@ -456,7 +456,7 @@ function reviewJsonp(params){
   document.head.appendChild(script);
  });
 }
-async async function submitReviewAndWait(lang,reviewText){
+async function submitReviewAndWait(lang,reviewText){
  const requestId="review_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,9);
  const payload={requestId,event:"review",lang:lang||"nl",reviewText:String(reviewText||"").trim()};
  try {
