@@ -436,7 +436,7 @@ function loadReviewsViaIframe() {
     const timeout = setTimeout(() => {
       finish(reject, new Error("Ook de iframe-verbinding met de reviewserver gaf geen antwoord."));
     }, 12000);
-    const query = new URLSearchParams({ action: "reviews", transport: "iframe", token });
+    const query = new URLSearchParams({ action: "reviews", transport: "iframe", token, _ts: String(Date.now()) });
     frame.src = PUBLIC_REVIEWS_WEB_APP_URL + "?" + query.toString();
     document.body.appendChild(frame);
   });
