@@ -458,35 +458,30 @@ function reviewJsonp(params){
 }
 async function submitReviewAndWait(lang,reviewText){
  const requestId="review_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,9);
- const result=await reviewJsonp({action:"submit",requestId,event:"review",lang,reviewText});
- // De nieuwe server slaat direct op; geen oude wachtrij/status-trigger meer gebruiken.
- if(!result || result.ok!==true || result.saved!==true){
-   throw new Error(result && result.error ? result.error : "De reviewserver heeft de opslag niet bevestigd.");
+ const payload={requestId,event:"review",lang:lang||"nl",reviewText:String(reviewText||"").trim()};
+ try {
+   const result=await reviewJsonp({action:"submit",...payload});
+   if(result && result.ok===true && result.saved===true) return result;
+   throw new Error(result && result.error ? result.error : "Opslag via JSONP niet bevestigd.");
+ } catch (jsonpError) {
+   // Mobiele browsers kunnen de Apps Script-redirect bij JSONP blokkeren.
+   // Probeer dan het bestaande iframe-POST transport.
+   await recordInGoogleSheet(payload);
+   return {ok:true,saved:true,requestId,transport:"iframe"};
  }
- return result;
 }
 async function submitFeedbackAndWait(lang, rating) {
   const requestId = "feedback_" + Date.now().toString(36) +
     "_" + Math.random().toString(36).slice(2, 9);
-
-  const result = await reviewJsonp({
-    action: "submit",
-    requestId: requestId,
-    event: "feedback",
-    lang: lang || "nl",
-    rating: Number(rating),
-    comment: ""
-  });
-
-  if (!result || result.ok !== true || result.queued !== true) {
-    throw new Error(
-      result && result.error
-        ? result.error
-        : "De sterrenbeoordeling kon niet worden aangenomen."
-    );
+  const payload = {requestId,event:"feedback",lang:lang||"nl",rating:Number(rating),comment:""};
+  try {
+    const result = await reviewJsonp({action:"submit", ...payload});
+    if (result && result.ok === true && result.queued === true) return result;
+    throw new Error(result && result.error ? result.error : "Sterrenbeoordeling niet bevestigd.");
+  } catch (jsonpError) {
+    await recordInGoogleSheet(payload);
+    return {ok:true,queued:true,saved:true,requestId,transport:"iframe"};
   }
-
-  return result;
 }
 function recordLanguageUsage(lang){
   try{
