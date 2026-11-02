@@ -306,7 +306,7 @@ if (!data || data.ok !== true || !Array.isArray(data.reviews)) {
       list.appendChild(article);
     });
   } catch (error) {
-    list.textContent = "Reviews konden niet worden geladen. Controleer de reviewserver.";
+    list.textContent = "Reviews konden niet worden geladen: " + (error && error.message ? error.message : "onbekende verbindingsfout") + ". Controleer de reviewserver.";
     console.error("Tholen reviews laden mislukt:", error);
   }
 }
