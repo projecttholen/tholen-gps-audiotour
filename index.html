@@ -35,6 +35,18 @@ header{padding:18px 18px 12px;background:var(--white);border-bottom:1px solid va
 #languageChoices{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px}
 #languageChoices .lang{justify-content:flex-start;padding:12px;font-size:15px;min-height:48px}
 #languageChoices .language-flag{font-size:23px;line-height:1;display:inline-flex;width:30px;justify-content:center;flex:none}
+/* Op de wandelpagina alleen de gekozen taal tonen; de volledige lijst hoort bij startpagina. */
+#langbar{display:flex;align-items:center;padding:10px 0 0}
+#langbar .lang-current{display:flex;min-width:150px;justify-content:center}
+#langbar .lang-options{display:none!important}
+#routeChoice{margin:0 0 18px;padding:16px;border:2px solid var(--ink);border-radius:14px;background:#fff;text-align:center}
+#routeChoice[hidden]{display:none!important}
+#routeChoice p{margin:0 0 12px;font-weight:650;font-size:17px}
+.route-choice-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.route-choice-actions button{min-height:44px;padding:10px 16px;border-radius:10px;border:1px solid var(--ink);font:inherit;font-weight:650;cursor:pointer}
+#continueRoute{background:var(--ink);color:#fff}
+#restartRoute{background:#fff;color:var(--ink)}
+
 body:not(.language-selected)>header,body:not(.language-selected)>main,body:not(.language-selected)>footer{display:none!important}
 main{max-width:1100px;margin:auto;padding:14px}
 .hero{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
@@ -90,6 +102,13 @@ footer{padding:22px 14px 40px;text-align:center;font-size:12px;opacity:.65}
     <h1 class="language-gate-title">Historische Audiowandeling Tholen</h1>
     <p class="language-gate-subtitle">Kies uw taal / Choose your language</p>
     <div id="languageChoices"></div>
+    <div id="routeChoice" hidden>
+      <p>U bent al onderweg. Wilt u verdergaan waar u gebleven was of de wandeling opnieuw starten?</p>
+      <div class="route-choice-actions">
+        <button id="continueRoute" type="button">Verdergaan waar ik gebleven was</button>
+        <button id="restartRoute" type="button">Opnieuw starten</button>
+      </div>
+    </div>
   </div>
 </section>
 <header>
@@ -215,7 +234,7 @@ const langbar=document.getElementById("langbar");
 const currentLangButton=document.createElement("button");
 currentLangButton.className="lang lang-current";
 currentLangButton.type="button";
-currentLangButton.onclick=()=>langbar.classList.toggle("open");
+currentLangButton.onclick=()=>returnToLanguageGate();
 langbar.appendChild(currentLangButton);
 const langOptions=document.createElement("div");
 langOptions.className="lang-options";
@@ -715,8 +734,45 @@ document.getElementById("feedbackForm").addEventListener("submit", async functio
 });
 
 
-// Toon bij ieder nieuw bezoek eerst uitsluitend de taalkeuze.
+// Startscherm, taalwissel en behoud van de huidige wandelpositie.
 const languageChoices = document.getElementById("languageChoices");
+const languageGate = document.getElementById("languageGate");
+const routeChoice = document.getElementById("routeChoice");
+let walkStarted = false;
+let routeDecision = "continue";
+let savedWalkView = null;
+
+function returnToLanguageGate() {
+  if (!document.body.classList.contains("language-selected")) return;
+  const center = map.getCenter();
+  savedWalkView = {
+    lat: center.lat,
+    lng: center.lng,
+    zoom: map.getZoom(),
+    scrollY: window.scrollY
+  };
+  if (window.tholenAudio) {
+    try { window.tholenAudio.pause(); } catch(e) {}
+    window.tholenAudio = null;
+  }
+  langbar.classList.remove("open");
+  document.body.classList.remove("language-selected");
+  languageGate.hidden = false;
+  routeChoice.hidden = false;
+  languageChoices.hidden = true;
+}
+
+document.getElementById("continueRoute").addEventListener("click", () => {
+  routeDecision = "continue";
+  routeChoice.hidden = true;
+  languageChoices.hidden = false;
+});
+document.getElementById("restartRoute").addEventListener("click", () => {
+  routeDecision = "restart";
+  routeChoice.hidden = true;
+  languageChoices.hidden = false;
+});
+
 LANGS.forEach(([code,name,voice,flag]) => {
   const button = document.createElement("button");
   button.type = "button";
@@ -725,10 +781,24 @@ LANGS.forEach(([code,name,voice,flag]) => {
   button.addEventListener("click", () => {
     setLang(code);
     document.body.classList.add("language-selected");
-    document.getElementById("languageGate").hidden = true;
+    languageGate.hidden = true;
+    routeChoice.hidden = true;
+    languageChoices.hidden = false;
     loadApprovedReviews();
     loadPublicRatingStats();
-    map.fitBounds(bounds,{padding:[25,25]});
+    // Leaflet was initialized while the map was hidden; force a fresh layout.
+    setTimeout(() => {
+      map.invalidateSize(true);
+      if (walkStarted && routeDecision === "continue" && savedWalkView) {
+        map.setView([savedWalkView.lat, savedWalkView.lng], savedWalkView.zoom, {animate:false});
+        window.scrollTo({top:savedWalkView.scrollY,behavior:"auto"});
+      } else {
+        map.fitBounds(bounds,{padding:[25,25]});
+        if (walkStarted && routeDecision === "restart") window.scrollTo({top:0,behavior:"auto"});
+      }
+      walkStarted = true;
+      savedWalkView = null;
+    }, 180);
   });
   languageChoices.appendChild(button);
 });
