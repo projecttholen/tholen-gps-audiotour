@@ -34,6 +34,7 @@ header{padding:18px 18px 12px;background:var(--white);border-bottom:1px solid va
 .language-gate-subtitle{text-align:center;margin:0 0 22px;color:var(--ink);font-size:17px}
 #languageChoices{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px}
 #languageChoices .lang{justify-content:flex-start;padding:12px;font-size:15px;min-height:48px}
+#languageChoices .language-flag{font-size:23px;line-height:1;display:inline-flex;width:30px;justify-content:center;flex:none}
 body:not(.language-selected)>header,body:not(.language-selected)>main,body:not(.language-selected)>footer{display:none!important}
 main{max-width:1100px;margin:auto;padding:14px}
 .hero{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
@@ -720,7 +721,7 @@ LANGS.forEach(([code,name,voice,flag]) => {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "lang";
-  button.innerHTML = `<span class="flag ${code}" aria-hidden="true"></span><span>${name}</span>`;
+  button.innerHTML = `<span class="language-flag" aria-hidden="true">${flag}</span><span>${name}</span>`;
   button.addEventListener("click", () => {
     setLang(code);
     document.body.classList.add("language-selected");
