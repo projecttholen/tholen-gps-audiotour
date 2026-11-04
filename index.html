@@ -456,9 +456,9 @@ function reviewJsonp(params){
   document.head.appendChild(script);
  });
 }
-async function submitReviewAndWait(lang,reviewText){
- const requestId="review_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,9);
- const payload={requestId,event:"review",lang:lang||"nl",reviewText:String(reviewText||"").trim()};
+async function submitReviewAndWait(lang,reviewText,rating){
+ const requestId="review_"+Date.now().toString(36)+"_"+Math.random().toString(36).    slice(2,9);
+ const payload={requestId,event:"review",lang:lang||"nl",reviewText:String(reviewText||"").trim(),rating:Number(rating)||0};
  try {
    const result=await reviewJsonp({action:"submit",...payload});
    if(result && result.ok===true && result.saved===true) return result;
@@ -600,11 +600,11 @@ document.getElementById("feedbackForm").addEventListener("submit", async functio
   try {
     if (reviewText) {
       status.textContent = "Review wordt verzonden…";
-      await submitReviewAndWait(currentLang || "nl", reviewText);
+      await submitReviewAndWait(currentLang || "nl", reviewText, rating ? Number(rating.value) : 0);
       reviewSaved = true;
     }
 
-    if (rating) {
+    if (rating && !reviewText) {
       try {
      await submitFeedbackAndWait(
   currentLang || "nl",
