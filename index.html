@@ -295,23 +295,17 @@ async function loadApprovedReviews() {
 
   list.textContent = "Reviews laden…";
   try {
-    // Mobiele browsers blokkeren soms de Google Apps Script-redirect bij JSONP.
-    // Probeer daarom eerst de HTML-iframe-route; JSONP is alleen de terugval.
-    let data;
-    try {
-      data = await loadReviewsViaIframe();
-    } catch (iframeError) {
-      console.warn("Tholen reviews: iframe-route mislukt; JSONP-terugval wordt geprobeerd.", iframeError);
-      data = await reviewJsonp({ action: "reviews", _ts: Date.now() });
+    // Gebruik dezelfde bewezen JSONP-verbinding als voor het gemiddelde cijfer.
+    const data = await reviewJsonp({ action: "reviews", _ts: Date.now() });
+
+    if (data && data.ok === true && data.reviews &&
+        !Array.isArray(data.reviews) &&
+        Array.isArray(data.reviews.reviews)) {
+      data.reviews = data.reviews.reviews;
     }
-if (data && data.ok === true && data.reviews &&
-    !Array.isArray(data.reviews) &&
-    Array.isArray(data.reviews.reviews)) {
-  data.reviews = data.reviews.reviews;
-}
-if (!data || data.ok !== true || !Array.isArray(data.reviews)) {
-  throw new Error(data && data.error ? data.error : "Ongeldig antwoord van de reviewserver.");
-}
+    if (!data || data.ok !== true || !Array.isArray(data.reviews)) {
+      throw new Error(data && data.error ? data.error : "Ongeldig antwoord van de reviewserver.");
+    }
 
     list.replaceChildren();
     if (data.reviews.length === 0) {
@@ -355,11 +349,12 @@ if (!data || data.ok !== true || !Array.isArray(data.reviews)) {
       list.appendChild(article);
     });
   } catch (error) {
-    list.textContent = "Reviews konden niet worden geladen: " + (error && error.message ? error.message : "onbekende verbindingsfout") + ". Controleer de reviewserver.";
+    list.textContent = "Reviews konden niet worden geladen: " +
+      (error && error.message ? error.message : "onbekende verbindingsfout") +
+      ". Controleer de reviewserver.";
     console.error("Tholen reviews laden mislukt:", error);
   }
 }
-
 
 function recordInGoogleSheet(payload) {
   if (
