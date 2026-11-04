@@ -26,6 +26,15 @@ header{padding:18px 18px 12px;background:var(--white);border-bottom:1px solid va
 }
 /* De voorgelezen haltesteksten staan niet op de pagina; ze blijven beschikbaar via Audio. */
 #stops .text{display:none!important;}
+/* Bij elk nieuw bezoek eerst de taalkeuze tonen. */
+#languageGate{position:fixed;inset:0;z-index:5000;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto}
+#languageGate[hidden]{display:none!important}
+.language-gate-panel{width:min(760px,100%);background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 8px 30px #00000012}
+.language-gate-title{font-family:Georgia,serif;font-size:clamp(25px,4vw,34px);font-weight:700;margin:0 0 8px;color:var(--ink);text-align:center}
+.language-gate-subtitle{text-align:center;margin:0 0 22px;color:var(--ink);font-size:17px}
+#languageChoices{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px}
+#languageChoices .lang{justify-content:flex-start;padding:12px;font-size:15px;min-height:48px}
+body:not(.language-selected)>header,body:not(.language-selected)>main,body:not(.language-selected)>footer{display:none!important}
 main{max-width:1100px;margin:auto;padding:14px}
 .hero{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
 h1{font-family:Georgia,serif;margin:0 0 7px;font-size:28px}.hero p{margin:0;line-height:1.55}
@@ -75,6 +84,13 @@ footer{padding:22px 14px 40px;text-align:center;font-size:12px;opacity:.65}
 </style>
 </head>
 <body>
+<section id="languageGate" aria-label="Kies uw taal">
+  <div class="language-gate-panel">
+    <h1 class="language-gate-title">Historische Audiowandeling Tholen</h1>
+    <p class="language-gate-subtitle">Kies uw taal / Choose your language</p>
+    <div id="languageChoices"></div>
+  </div>
+</section>
 <header>
   <div class="brand">Historische Audiowandeling Tholen</div>
   <div class="sub" id="subtitle">15 haltes · route opgenomen met GPS</div>
@@ -698,10 +714,23 @@ document.getElementById("feedbackForm").addEventListener("submit", async functio
 });
 
 
-setLang(localStorage.getItem("tholen-lang")||"nl");
-loadApprovedReviews();
-loadPublicRatingStats();
-map.fitBounds(bounds,{padding:[25,25]});
+// Toon bij ieder nieuw bezoek eerst uitsluitend de taalkeuze.
+const languageChoices = document.getElementById("languageChoices");
+LANGS.forEach(([code,name,voice,flag]) => {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "lang";
+  button.innerHTML = `<span class="flag ${code}" aria-hidden="true"></span><span>${name}</span>`;
+  button.addEventListener("click", () => {
+    setLang(code);
+    document.body.classList.add("language-selected");
+    document.getElementById("languageGate").hidden = true;
+    loadApprovedReviews();
+    loadPublicRatingStats();
+    map.fitBounds(bounds,{padding:[25,25]});
+  });
+  languageChoices.appendChild(button);
+});
 
 // Privacyvriendelijke eigen teller: één bezoek per browser per dag.
 (function(){
