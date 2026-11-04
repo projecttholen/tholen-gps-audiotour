@@ -247,12 +247,22 @@ function feedbackText(){return feedbackUi[currentLang]||feedbackUi.en;}
 function updateFeedbackLabels(){
  const t=feedbackText();
  document.getElementById("openFeedback").textContent=t.button;
- document.getElementById("feedbackTitle").textContent=t.title;
- document.getElementById("feedbackIntro").textContent=t.intro;
- document.getElementById("feedbackRatingLabel").textContent=t.rating;
+ const reviewMode = typeof feedbackMode !== "undefined" && feedbackMode === "review";
+ document.getElementById("feedbackTitle").textContent=reviewMode
+   ? (currentLang==="nl" ? "Schrijf een review" : t.comment)
+   : (currentLang==="nl" ? "Beoordeel de wandeling" : t.title);
+ document.getElementById("feedbackIntro").textContent=reviewMode
+   ? (currentLang==="nl" ? "Deel uw ervaring met andere wandelaars. Sterren geven mag, maar hoeft niet." : t.intro)
+   : t.intro;
+ document.getElementById("feedbackRatingLabel").textContent=reviewMode
+   ? (currentLang==="nl" ? "Wilt u ook sterren geven? (optioneel)" : t.rating)
+   : t.rating;
  document.getElementById("feedbackScale").textContent=t.scale;
+ document.getElementById("feedbackScale").hidden=reviewMode;
  document.getElementById("feedbackCommentLabel").textContent=t.comment;
+ document.getElementById("feedbackCommentLabel").hidden=!reviewMode;
  document.getElementById("feedbackComment").placeholder=t.placeholder;
+ document.getElementById("feedbackComment").hidden=!reviewMode;
  document.getElementById("feedbackSubmit").textContent=t.submit;
  document.getElementById("feedbackPrivacy").textContent=t.privacy;
  document.querySelectorAll(".rating-option input").forEach((el)=>{const n=Number(el.value);el.nextElementSibling.setAttribute("aria-label",`${n} ${currentLang==="nl"?(n===1?"ster":"sterren"):currentLang==="de"?(n===1?"Stern":"Sterne"):currentLang==="fr"?(n===1?"étoile":"étoiles"):"star"+(n===1?"":"s")}`);});
