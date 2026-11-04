@@ -125,6 +125,7 @@ footer{padding:22px 14px 40px;text-align:center;font-size:12px;opacity:.65}
 <section id="publicReviews" class="card feedback-card" aria-labelledby="publicReviewsTitle">
   <h2 id="publicReviewsTitle">Ervaringen van andere wandelaars</h2>
   <p id="reviewsIntro">Lees reviews die zijn gecontroleerd en goedgekeurd.</p>
+  <div id="publicRatingSummary" class="review-meta" aria-live="polite">Gemiddelde beoordeling wordt geladen…</div>
   <div id="reviewsList" aria-live="polite"><p>Goedgekeurde reviews worden geladen zodra de reviewkoppeling is ingesteld.</p></div>
 </section>
 
@@ -270,6 +271,23 @@ function updateFeedbackLabels(){
 const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzEyN3FTvK4a9LobUrgpiNS0kaSh90hLZW3sv6UlhRqq0z1jlOV6SC99xBbvfp6OkA3/exec";
 // Vul na publicatie van het aparte Apps Script de nieuwe /exec-URL hieronder in.
 const PUBLIC_REVIEWS_WEB_APP_URL = GOOGLE_SHEETS_WEB_APP_URL;
+
+async function loadPublicRatingStats() {
+  const box = document.getElementById("publicRatingSummary");
+  if (!box) return;
+  try {
+    const data = await reviewJsonp({ action: "stats", _ts: Date.now() });
+    if (!data || data.ok !== true) throw new Error(data && data.error ? data.error : "Geen geldige beoordeling ontvangen.");
+    const count = Number(data.count) || 0;
+    const average = Number(data.average) || 0;
+    box.textContent = count
+      ? "Gemiddelde beoordeling: " + average.toFixed(1).replace(".", ",") + " / 5 (" + count + (count === 1 ? " beoordeling)" : " beoordelingen)")
+      : "Er zijn nog geen beoordelingen.";
+  } catch (error) {
+    box.textContent = "Gemiddelde beoordeling is tijdelijk niet beschikbaar.";
+    console.warn("Tholen gemiddelde beoordeling laden mislukt:", error);
+  }
+}
 
 async function loadApprovedReviews() {
   const list = document.getElementById("reviewsList");
@@ -690,6 +708,7 @@ document.getElementById("feedbackForm").addEventListener("submit", async functio
 
 setLang(localStorage.getItem("tholen-lang")||"nl");
 loadApprovedReviews();
+loadPublicRatingStats();
 map.fitBounds(bounds,{padding:[25,25]});
 
 // Privacyvriendelijke eigen teller: één bezoek per browser per dag.
