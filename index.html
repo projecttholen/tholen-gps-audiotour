@@ -300,9 +300,18 @@ if (!data || data.ok !== true || !Array.isArray(data.reviews)) {
       meta.className = "review-meta";
       meta.textContent = String(r.lang || "").toUpperCase();
       const body = document.createElement("div");
-      body.className = "review-body";
-      body.textContent = String(r.text || "");
-      article.append(meta, body);
+body.className = "review-body";
+body.textContent = String(r.text || "");
+
+const rating = Number(r.rating) || 0;
+if (rating >= 1 && rating <= 5) {
+  const stars = document.createElement("div");
+  stars.className = "review-rating";
+  stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
+  article.append(meta, stars, body);
+} else {
+  article.append(meta, body);
+}
       list.appendChild(article);
     });
   } catch (error) {
