@@ -613,14 +613,7 @@ function showFeedback(focusReview=false){
  section.hidden=false;
  commentLabel.hidden=!focusReview;
  commentBox.hidden=!focusReview;
- title.textContent=focusReview ? "Schrijf een review" : "Beoordeel de wandeling";
- intro.textContent=focusReview
-   ? "Deel uw ervaring met andere wandelaars. Sterren geven mag, maar hoeft niet."
-   : "Geef de wandeling een beoordeling van 1 tot 5 sterren.";
- document.getElementById("feedbackRatingLabel").textContent=focusReview
-   ? "Wilt u ook sterren geven? (optioneel)"
-   : "Geef 1 tot 5 sterren";
- document.getElementById("feedbackScale").hidden=focusReview;
+ updateFeedbackLabels();
  section.scrollIntoView({behavior:"smooth",block:"center"});
  if(focusReview) setTimeout(()=>commentBox.focus({preventScroll:true}),350);
 }
