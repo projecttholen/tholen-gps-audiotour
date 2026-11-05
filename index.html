@@ -315,7 +315,7 @@ function updateFeedbackLabels(){
  document.getElementById("openFeedback").textContent=t.button;
  const reviewMode = typeof feedbackMode !== "undefined" && feedbackMode === "review";
  document.getElementById("feedbackTitle").textContent=reviewMode
-   ? (currentLang==="nl" ? "Schrijf een review" : t.comment)
+   ? (writeReviewLabels[currentLang]||writeReviewLabels.en)
    : (currentLang==="nl" ? "Beoordeel de wandeling" : t.title);
  document.getElementById("feedbackIntro").textContent=reviewMode
    ? (currentLang==="nl" ? "Deel uw ervaring met andere wandelaars. Sterren geven mag, maar hoeft niet." : t.intro)
