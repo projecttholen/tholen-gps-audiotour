@@ -212,6 +212,36 @@ const ui={
  sl:["Tholen skozi čas","Sledite posneti poti in odkrivajte zgodovinsko mesto, postajo za postajo.","15 postaj · pot GPS"]
 };
 const writeReviewLabels={nl:"Schrijf een review",en:"Write a review",de:"Rezension schreiben",fr:"Écrire un avis",fi:"Kirjoita arvostelu",sv:"Skriv en recension",no:"Skriv en anmeldelse",da:"Skriv en anmeldelse",is:"Skrifa umsögn",es:"Escribir una reseña",it:"Scrivi una recensione",pt:"Escrever uma avaliação",pl:"Napisz opinię",cs:"Napsat recenzi",hu:"Írjon véleményt",ro:"Scrie o recenzie",gr:"Γράψτε μια κριτική",tr:"Yorum yazın",ar:"اكتب مراجعة",bg:"Напишете отзив",hr:"Napišite recenziju",et:"Kirjuta arvustus",ga:"Scríobh léirmheas",lv:"Uzrakstīt atsauksmi",lt:"Parašyti atsiliepimą",mt:"Ikteb reviżjoni",sk:"Napísať recenziu",sl:"Napišite oceno"};
+const stopUi={
+ nl:{stop:"Halte",audio:"Audio afspelen",map:"Op kaart"},
+ en:{stop:"Stop",audio:"Play audio",map:"Show on map"},
+ de:{stop:"Station",audio:"Audio abspielen",map:"Auf Karte zeigen"},
+ fr:{stop:"Étape",audio:"Lire l’audio",map:"Voir sur la carte"},
+ it:{stop:"Tappa",audio:"Riproduci audio",map:"Mostra sulla mappa"},
+ es:{stop:"Parada",audio:"Reproducir audio",map:"Ver en el mapa"},
+ pt:{stop:"Paragem",audio:"Reproduzir áudio",map:"Ver no mapa"},
+ da:{stop:"Stop",audio:"Afspil lyd",map:"Vis på kort"},
+ no:{stop:"Stopp",audio:"Spill av lyd",map:"Vis på kart"},
+ sv:{stop:"Stopp",audio:"Spela upp ljud",map:"Visa på kartan"},
+ fi:{stop:"Pysäkki",audio:"Toista ääni",map:"Näytä kartalla"},
+ is:{stop:"Stopp",audio:"Spila hljóð",map:"Sýna á korti"},
+ pl:{stop:"Przystanek",audio:"Odtwórz audio",map:"Pokaż na mapie"},
+ cs:{stop:"Zastávka",audio:"Přehrát audio",map:"Zobrazit na mapě"},
+ hu:{stop:"Megálló",audio:"Hang lejátszása",map:"Megjelenítés a térképen"},
+ ro:{stop:"Oprire",audio:"Redă audio",map:"Arată pe hartă"},
+ gr:{stop:"Στάση",audio:"Αναπαραγωγή ήχου",map:"Προβολή στον χάρτη"},
+ tr:{stop:"Durak",audio:"Sesi oynat",map:"Haritada göster"},
+ ar:{stop:"محطة",audio:"تشغيل الصوت",map:"عرض على الخريطة"},
+ bg:{stop:"Спирка",audio:"Пусни аудио",map:"Покажи на картата"},
+ hr:{stop:"Postaja",audio:"Reproduciraj audio",map:"Prikaži na karti"},
+ et:{stop:"Peatus",audio:"Esita heli",map:"Näita kaardil"},
+ ga:{stop:"Stad",audio:"Seinn fuaim",map:"Taispeáin ar an léarscáil"},
+ lv:{stop:"Pietura",audio:"Atskaņot audio",map:"Rādīt kartē"},
+ lt:{stop:"Stotelė",audio:"Leisti garsą",map:"Rodyti žemėlapyje"},
+ mt:{stop:"Waqfa",audio:"Daqq l-awdjo",map:"Uri fuq il-mappa"},
+ sk:{stop:"Zastávka",audio:"Prehrať audio",map:"Zobraziť na mape"},
+ sl:{stop:"Postaja",audio:"Predvajaj zvok",map:"Prikaži na zemljevidu"}
+};
 const navigateLabels={
  nl:"Navigeer naar dichtstbijzijnde halte",en:"Navigate to nearest stop",de:"Zur nächsten Haltestelle navigieren",fr:"Naviguer vers l’arrêt le plus proche",
  es:"Navegar a la parada más cercana",it:"Naviga alla fermata più vicina",pt:"Navegar para a paragem mais próxima",da:"Naviger til nærmeste stop",no:"Naviger til nærmeste stopp",sv:"Navigera till närmaste stopp",fi:"Navigoi lähimmälle pysäkille",pl:"Nawiguj do najbliższego przystanku"
@@ -632,7 +662,8 @@ async function renderStops(){
   for(const s of ROUTE_MAP_DATA.stops){
     const card=document.createElement("article");
     card.className="card";
-    card.innerHTML=`<div class="stophead"><div class="num">${s.nr}</div><div><div class="stoptitle">${s.title}</div><div class="small">Stop ${s.nr}</div></div></div><div class="small text">Tekst wordt geladen...</div><div class="stop-actions"><button class="btn play">Audio</button><button class="btn kaart">Op kaart</button></div>`;
+    const labels=stopUi[currentLang]||stopUi.en;
+    card.innerHTML=`<div class="stophead"><div class="num">${s.nr}</div><div><div class="stoptitle">${s.title}</div><div class="small">${labels.stop} ${s.nr}</div></div></div><div class="small text">Tekst wordt geladen...</div><div class="stop-actions"><button class="btn play">${labels.audio}</button><button class="btn kaart">${labels.map}</button></div>`;
     box.appendChild(card);
     cards.push([s,card]);
     card.querySelector(".kaart").onclick=()=>{map.setView([s.lat,s.lon],18);stopMarkers[s.nr-1].openPopup();window.scrollTo({top:0,behavior:"smooth"})};
