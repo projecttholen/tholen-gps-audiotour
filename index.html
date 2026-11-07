@@ -255,7 +255,7 @@ const routeActionLabels={"nl":["▶ TOON WANDELROUTE","Route volledig tonen","GP
 const navigateLabels={
  nl:"Navigeer naar dichtstbijzijnde halte",en:"Navigate to nearest stop",de:"Zur nächsten Haltestelle navigieren",fr:"Naviguer vers l’arrêt le plus proche",
  es:"Navegar a la parada más cercana",it:"Naviga alla fermata più vicina",pt:"Navegar para a paragem mais próxima",da:"Naviger til nærmeste stop",no:"Naviger til nærmeste stopp",sv:"Navigera till närmaste stopp",fi:"Navigoi lähimmälle pysäkille",pl:"Nawiguj do najbliższego przystanku",is:"Farðu að næsta stoppi",cs:"Navigovat k nejbližší zastávce",
- hu:"Navigálás a legközelebbi megállóhoz",ro:"Navighează către cea mai apropiată oprire",gr:"Πλοήγηση στην πλησιέστερη στάση",tr:"En yakın durağa git",ar:"انتقل إلى أقرب محطة",bg:"Навигирай до най-близката спирка",hr:"Navigiraj do najbliže postaje",et:"Navigeeri lähima peatuseni",ga:"Nasclean chuig an stad is gaire",lv:"Navigēt uz tuvāko pieturu",lt:"Naviguoti į artimiausią stotelę",mt:"Innaviga lejn l-eqreb waqfa",sk:"Navigovať k najbližšej zastávke",sl:"Navigacija do najbližje postaje"
+ hu:"Navigálás a legközelebbi megállóhoz",ro:"Navighează către cea mai apropiată oprire",gr:"Πλοήγηση στην πλησιέστερη στάση",tr:"En yakın durağa git",ar:"انتقل إلى أقرب محطة",bg:"Навигирай до най-близката спирка",hr:"Navigiraj do najbliže postaje",et:"Navigeeri lähima peatuseni",ga:"Nasclean chuig an stad is gaire",lv:"Navigēt uz tuvāko pieturu",lt:"Naviguoti į artimiausią stotelę",mt:"Innaviga lejn l-eqreb waqfa",sk:"Navigovať k najbližšej zastávke",sl:"Navigacija do najbližje postaje",uk:"Прокласти маршрут до найближчої зупинки"
 };
 let currentLang="nl";
 const map=L.map("map",{zoomControl:true}).setView([51.5318,4.2208],16);
@@ -649,9 +649,10 @@ function setLang(lang){
   document.getElementById("fit").textContent=routeLabels[1];
   document.querySelector("a[download]").textContent=routeLabels[2];
   document.querySelector(".actions button:last-child").textContent=routeLabels[3];
-  document.getElementById("routeQuestion").textContent=routeLabels.routeChoice[lang][0];
-  document.getElementById("continueRoute").textContent=routeLabels.routeChoice[lang][1];
-  document.getElementById("restartRoute").textContent=routeLabels.routeChoice[lang][2];
+  const routeChoiceText=routeActionLabels.routeChoice[lang]||routeActionLabels.routeChoice.en;
+  document.getElementById("routeQuestion").textContent=routeChoiceText[0];
+  document.getElementById("continueRoute").textContent=routeChoiceText[1];
+  document.getElementById("restartRoute").textContent=routeChoiceText[2];
   updateFeedbackLabels();
   renderStops();
 }
