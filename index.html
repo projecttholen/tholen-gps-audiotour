@@ -697,6 +697,11 @@ async function renderStops(){
   await Promise.all(cards.map(async ([s,card])=>{
     const t=await loadText(currentLang,s.nr);
     card.querySelector(".text").textContent=t || "Historische halte van de wandeling.";
+    // Use the translated heading from the stop script as the visible card title.
+    // Dutch place names remain unchanged where a translation keeps the original name.
+    const firstLine=(t||"").split(/\r?\n/,1)[0].trim();
+    const translatedTitle=firstLine.match(/^(?:STOP|ЗУПИНКА|ĐIỂM DỪNG)\s+\d+\s*[—–-]\s*(.+)$/i);
+    if(translatedTitle) card.querySelector(".stoptitle").textContent=translatedTitle[1].trim();
   }));
 }
 let speech=null;
