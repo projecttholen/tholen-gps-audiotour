@@ -53,7 +53,7 @@ for (const language of languages) {
   for (const dictionary of uiDictionaries) {
     // Match a language property inside the named UI dictionary.
     const escaped = dictionary.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const pattern = new RegExp("\\b" + escaped + "\\s*:[\\s\\S]{0,12000}?\\b" + language.code + "\\s*:");
+    const pattern = new RegExp("const\\\\s+" + escaped + "\\\\s*=\\\\s*\\\\{[\\\\s\\\\S]{0,25000}?\\\\b" + language.code + "\\\\s*:");
     report(pattern.test(index), language.code + " UI dictionary: " + dictionary);
   }
 
