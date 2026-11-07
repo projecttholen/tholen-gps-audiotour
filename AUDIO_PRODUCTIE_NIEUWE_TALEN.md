@@ -1,6 +1,6 @@
 # Audioproductie – nieuwe talen
 
-Dit document houdt de audioproductie bij voor Oekraïens, Japans, Vietnamees en Frysk (Fryslân).
+Dit document houdt de tekst- en audioproductie bij voor Oekraïens, Japans, Vietnamees en Frysk (Fryslân).
 
 ## Bestandsconventie
 
@@ -14,10 +14,12 @@ De speler in de website gebruikt deze paden rechtstreeks. Een taal mag pas aan d
 
 | Taal | Code | Teksten | Audio | Activeren |
 |---|---|---:|---:|---|
-| Oekraïens | uk | 15/15 voorbereid | 0/15 | geblokkeerd |
-| Japans | ja | 0/15 | 0/15 | geblokkeerd |
-| Vietnamees | vi | 0/15 | 0/15 | geblokkeerd |
-| Frysk (Fryslân) | fy | 0/15 | 0/15 | geblokkeerd |
+| Oekraïens | uk | 15/15 conceptvertaling | 0/15 | geblokkeerd |
+| Japans | ja | 15/15 conceptvertaling | 0/15 | geblokkeerd |
+| Vietnamees | vi | 15/15 conceptvertaling | 0/15 | geblokkeerd |
+| Frysk (Fryslân) | fy | 15/15 conceptvertaling | 0/15 | geblokkeerd |
+
+**Let op:** de nieuwe teksten zijn als complete eerste vertaalversies voorbereid. Laat ze vóór opname bij voorkeur nalezen door een moedertaalspreker, met extra aandacht voor plaatsnamen, historische termen en uitspraak.
 
 ## Controle per audiobestand
 
@@ -54,7 +56,7 @@ Voor iedere taal worden deze bestanden verwacht:
 ## Publicatiepoort
 
 Een taal blijft verborgen in de taalkeuze totdat:
-1. alle 15 vertalingen aanwezig zijn;
+1. alle 15 vertalingen aanwezig zijn en taalkundig zijn nagekeken;
 2. alle 15 MP3's zijn gegenereerd en gecontroleerd;
 3. de taalinterface volledig is vertaald;
 4. een praktijktest van laden en afspelen is geslaagd.
