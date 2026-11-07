@@ -53,6 +53,8 @@ Voor iedere taal worden deze bestanden verwacht:
 - [ ] stop-14.mp3
 - [ ] stop-15.mp3
 
+De haltetitel op de wandelpagina wordt uit de eerste regel van de vertaalde haltekst gehaald. Zo blijven de Nederlandse kaartlabels en coördinaten intact, terwijl de zichtbare haltekaart de lokale titel toont.
+
 ## Automatische controle
 
 Voer vanuit de repository-root uit:
