@@ -812,7 +812,7 @@ LANGS.forEach(([code,name,voice,flag]) => {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "lang";
-  button.innerHTML = `<span class="language-flag" aria-hidden="true">${flag}</span><span>${name}</span>`;
+  button.innerHTML = `<span class="flag ${code}" aria-hidden="true"></span><span>${name}</span>`;
   button.addEventListener("click", () => {
     setLang(code);
     document.body.classList.add("language-selected");
