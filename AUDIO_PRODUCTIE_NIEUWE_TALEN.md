@@ -53,6 +53,14 @@ Voor iedere taal worden deze bestanden verwacht:
 - [ ] stop-14.mp3
 - [ ] stop-15.mp3
 
+## Automatische controle
+
+Voer vanuit de repository-root uit:
+
+`node scripts/check-language-readiness.js`
+
+Dit controleert de aanwezigheid van 15 teksten per taal, de zes belangrijkste UI-woordenboeken en 15 niet-lege MP3-bestanden. De controle is structureel: zij vervangt geen moedertaalcontrole, luistertest of praktijktest in de browser. De bestaande audiocontrole kan apart worden uitgevoerd met `node scripts/check-audio.js`.
+
 ## Publicatiepoort
 
 Een taal blijft verborgen in de taalkeuze totdat:
