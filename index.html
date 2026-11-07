@@ -93,6 +93,14 @@ footer{padding:22px 14px 40px;text-align:center;font-size:12px;opacity:.65}
 .flag.sk{background:linear-gradient(to bottom,#fff 0 33%,#0b4ea2 33% 66%,#ee1c25 66%)}
 .flag.sl{background:linear-gradient(to bottom,#fff 0 33%,#0b4ea2 33% 66%,#ee1c25 66%)}
 
+/* Voorbereide vlaggen voor de vier geplande extra talen. */
+.flag.uk{background:linear-gradient(to bottom,#0057b7 0 50%,#ffd700 50%)}
+.flag.ja{background:#fff}.flag.ja:after{content:'';position:absolute;width:7px;height:7px;border-radius:50%;background:#bc002d;left:7px;top:3px}
+.flag.vi{background:#da251d}.flag.vi:after{content:'★';position:absolute;left:6px;top:-2px;font-size:12px;color:#ff0;line-height:17px}
+.flag.fy{background:repeating-linear-gradient(to bottom,#fff 0 3px,#0055a4 3px 5px,#fff 5px 8px)}
+.flag.fy:after{content:'✿';position:absolute;left:5px;top:-2px;color:#d71920;font-size:10px;text-shadow:5px 4px #d71920,10px 0 #d71920}
+
+
 .feedback-card h2{margin:0 0 8px;font-size:21px}.feedback-card p{line-height:1.45}.rating-options{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.rating-option{position:relative;display:inline-flex;align-items:center;justify-content:center}.rating-option input{position:absolute;opacity:0;width:1px;height:1px}.rating-option label{font-size:31px;line-height:1;padding:4px;border-radius:8px;cursor:pointer;color:#c7c0b4}.rating-option input:checked+label,.rating-option label:hover{color:#e0a323}.rating-option input:focus-visible+label{outline:3px solid #276ef1}.feedback-card textarea{display:block;width:100%;min-height:90px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;margin:6px 0 12px}.feedback-status{font-size:14px;margin-top:10px;font-weight:600}.feedback-privacy{font-size:12px;opacity:.72}.feedback-card[hidden]{display:none!important}.review-item{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0;background:var(--card, #fff);box-shadow:0 2px 8px rgba(0,0,0,.04)}.review-stars{color:#d6a33a;letter-spacing:2px;font-size:18px;margin:4px 0 8px}.review-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px;opacity:.75;margin:0 0 8px}#publicRatingSummary{display:block;border:2px solid var(--ink);border-radius:12px;padding:13px 15px;margin:12px 0 16px;font-size:17px;font-weight:750;line-height:1.4;opacity:1;background:#fff;}.review-date{margin-left:auto;text-align:right}.review-body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}
 
 </style>
@@ -104,7 +112,7 @@ footer{padding:22px 14px 40px;text-align:center;font-size:12px;opacity:.65}
     <p class="language-gate-subtitle">Kies uw taal / Choose your language</p>
     <div id="languageChoices"></div>
     <div id="routeChoice" hidden>
-      <p>U bent al onderweg. Wilt u verdergaan waar u gebleven was of de wandeling opnieuw starten?</p>
+      <p id="routeQuestion">U bent al onderweg. Wilt u verdergaan waar u gebleven was of de wandeling opnieuw starten?</p>
       <div class="route-choice-actions">
         <button id="continueRoute" type="button">Verdergaan waar ik gebleven was</button>
         <button id="restartRoute" type="button">Opnieuw starten</button>
@@ -168,6 +176,7 @@ footer{padding:22px 14px 40px;text-align:center;font-size:12px;opacity:.65}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="route-map-data.js"></script>
 <script src="teksten-data_28_talen_FINAL.js"></script>
+<script src="teksten-data-uk.js"></script>
 <script>
 const LANGS = [
  ["nl","Nederlands","nl-NL","🇳🇱"],["en","English","en-US","🇬🇧"],["de","Deutsch","de-DE","🇩🇪"],
@@ -209,12 +218,52 @@ const ui={
  lt:["Tholen per amžius","Sekite įrašytu maršrutu ir atraskite istorinį miestą, stotelę po stotelės.","15 stotelių · GPS maršrutas"],
  mt:["Tholen matul iż-żmien","Segwi r-rotta rreġistrata u skopri l-belt storika, waqfa wara l-oħra.","15-il waqfa · rotta GPS"],
  sk:["Tholen v priebehu času","Sledujte zaznamenanú trasu a objavujte historické mesto zastávku po zastávke.","15 zastávok · GPS trasa"],
- sl:["Tholen skozi čas","Sledite posneti poti in odkrivajte zgodovinsko mesto, postajo za postajo.","15 postaj · pot GPS"]
+ sl:["Tholen skozi čas","Sledite posneti poti in odkrivajte zgodovinsko mesto, postajo za postajo.","15 postaj · pot GPS"],
+ uk:["Тхолен крізь віки","Пройдіть фактичним маршрутом і відкрийте для себе історичний центр міста — зупинка за зупинкою.","15 зупинок · маршрут записано за допомогою GPS"],
+ fy:["Tholen troch de tiid","Folgje de rûte dy't echt rûn is en ûntdek de histoaryske binnenstêd, halte foar halte.","15 haltes · rûte fêstlein mei GPS"],
+ ja:["時をたどるトーレン","実際に歩いたルートをたどりながら、歴史ある街の中心部を各スポットごとに発見しましょう。","15か所 · GPSで記録したルート"],
+ vi:["Tholen qua dòng thời gian","Đi theo lộ trình thực tế và khám phá khu phố cổ qua từng điểm dừng.","15 điểm dừng · lộ trình được ghi bằng GPS"]
 };
-const writeReviewLabels={nl:"Schrijf een review",en:"Write a review",de:"Rezension schreiben",fr:"Écrire un avis",fi:"Kirjoita arvostelu",sv:"Skriv en recension",no:"Skriv en anmeldelse",da:"Skriv en anmeldelse",is:"Skrifa umsögn",es:"Escribir una reseña",it:"Scrivi una recensione",pt:"Escrever uma avaliação",pl:"Napisz opinię",cs:"Napsat recenzi",hu:"Írjon véleményt",ro:"Scrie o recenzie",gr:"Γράψτε μια κριτική",tr:"Yorum yazın",ar:"اكتب مراجعة",bg:"Напишете отзив",hr:"Napišite recenziju",et:"Kirjuta arvustus",ga:"Scríobh léirmheas",lv:"Uzrakstīt atsauksmi",lt:"Parašyti atsiliepimą",mt:"Ikteb reviżjoni",sk:"Napísať recenziu",sl:"Napišite oceno"};
+const writeReviewLabels={nl:"Schrijf een review",en:"Write a review",de:"Rezension schreiben",fr:"Écrire un avis",fi:"Kirjoita arvostelu",sv:"Skriv en recension",no:"Skriv en anmeldelse",da:"Skriv en anmeldelse",is:"Skrifa umsögn",es:"Escribir una reseña",it:"Scrivi una recensione",pt:"Escrever uma avaliação",pl:"Napisz opinię",cs:"Napsat recenzi",hu:"Írjon véleményt",ro:"Scrie o recenzie",gr:"Γράψτε μια κριτική",tr:"Yorum yazın",ar:"اكتب مراجعة",bg:"Напишете отзив",hr:"Napišite recenziju",et:"Kirjuta arvustus",ga:"Scríobh léirmheas",lv:"Uzrakstīt atsauksmi",lt:"Parašyti atsiliepimą",mt:"Ikteb reviżjoni",sk:"Napísať recenziu",sl:"Napišite oceno",uk:"Залишити відгук",fy:"Skriuw in resinsje",ja:"レビューを書く",vi:"Viết đánh giá"};
+const stopUi={
+ nl:{stop:"Halte",audio:"Audio afspelen",map:"Op kaart"},
+ en:{stop:"Stop",audio:"Play audio",map:"Show on map"},
+ de:{stop:"Station",audio:"Audio abspielen",map:"Auf Karte zeigen"},
+ fr:{stop:"Étape",audio:"Lire l’audio",map:"Voir sur la carte"},
+ it:{stop:"Tappa",audio:"Riproduci audio",map:"Mostra sulla mappa"},
+ es:{stop:"Parada",audio:"Reproducir audio",map:"Ver en el mapa"},
+ pt:{stop:"Paragem",audio:"Reproduzir áudio",map:"Ver no mapa"},
+ da:{stop:"Stop",audio:"Afspil lyd",map:"Vis på kort"},
+ no:{stop:"Stopp",audio:"Spill av lyd",map:"Vis på kart"},
+ sv:{stop:"Stopp",audio:"Spela upp ljud",map:"Visa på kartan"},
+ fi:{stop:"Pysäkki",audio:"Toista ääni",map:"Näytä kartalla"},
+ is:{stop:"Stopp",audio:"Spila hljóð",map:"Sýna á korti"},
+ pl:{stop:"Przystanek",audio:"Odtwórz audio",map:"Pokaż na mapie"},
+ cs:{stop:"Zastávka",audio:"Přehrát audio",map:"Zobrazit na mapě"},
+ hu:{stop:"Megálló",audio:"Hang lejátszása",map:"Megjelenítés a térképen"},
+ ro:{stop:"Oprire",audio:"Redă audio",map:"Arată pe hartă"},
+ gr:{stop:"Στάση",audio:"Αναπαραγωγή ήχου",map:"Προβολή στον χάρτη"},
+ tr:{stop:"Durak",audio:"Sesi oynat",map:"Haritada göster"},
+ ar:{stop:"محطة",audio:"تشغيل الصوت",map:"عرض على الخريطة"},
+ bg:{stop:"Спирка",audio:"Пусни аудио",map:"Покажи на картата"},
+ hr:{stop:"Postaja",audio:"Reproduciraj audio",map:"Prikaži na karti"},
+ et:{stop:"Peatus",audio:"Esita heli",map:"Näita kaardil"},
+ ga:{stop:"Stad",audio:"Seinn fuaim",map:"Taispeáin ar an léarscáil"},
+ lv:{stop:"Pietura",audio:"Atskaņot audio",map:"Rādīt kartē"},
+ lt:{stop:"Stotelė",audio:"Leisti garsą",map:"Rodyti žemėlapyje"},
+ mt:{stop:"Waqfa",audio:"Daqq l-awdjo",map:"Uri fuq il-mappa"},
+ sk:{stop:"Zastávka",audio:"Prehrať audio",map:"Zobraziť na mape"},
+ sl:{stop:"Postaja",audio:"Predvajaj zvok",map:"Prikaži na zemljevidu"},
+ uk:{stop:"Зупинка",audio:"Відтворити аудіо",map:"Показати на карті"},
+ fy:{stop:"Halte",audio:"Audio ôfspiele",map:"Op de kaart sjen"},
+ ja:{stop:"スポット",audio:"音声を再生",map:"地図で表示"},
+ vi:{stop:"Điểm dừng",audio:"Phát âm thanh",map:"Hiển thị trên bản đồ"}
+};
+const routeActionLabels={"nl":["▶ TOON WANDELROUTE","Route volledig tonen","GPX downloaden","Lees reviews"],"en":["▶ VIEW WALKING ROUTE","Show full route","Download GPX","Read reviews"],"de":["▶ WANDERROUTE ANZEIGEN","Gesamte Route anzeigen","GPX herunterladen","Bewertungen lesen"],"fr":["▶ VOIR L’ITINÉRAIRE","Afficher tout l’itinéraire","Télécharger GPX","Lire les avis"],"it":["▶ MOSTRA IL PERCORSO","Mostra tutto il percorso","Scarica GPX","Leggi le recensioni"],"es":["▶ MOSTRAR LA RUTA","Mostrar toda la ruta","Descargar GPX","Leer reseñas"],"pt":["▶ VER O PERCURSO","Mostrar percurso completo","Descarregar GPX","Ler avaliações"],"da":["▶ VIS GÅRUTEN","Vis hele ruten","Download GPX","Læs anmeldelser"],"no":["▶ VIS GÅRUTEN","Vis hele ruten","Last ned GPX","Les anmeldelser"],"sv":["▶ VISA VANDRINGSRUTTEN","Visa hela rutten","Ladda ner GPX","Läs omdömen"],"fi":["▶ NÄYTÄ KÄVELYREITTI","Näytä koko reitti","Lataa GPX","Lue arvostelut"],"is":["▶ SÝNA GÖNGULEIÐ","Sýna alla leiðina","Sækja GPX","Lesa umsagnir"],"pl":["▶ POKAŻ TRASĘ SPACERU","Pokaż całą trasę","Pobierz GPX","Czytaj opinie"],"cs":["▶ ZOBRAZIT TRASU","Zobrazit celou trasu","Stáhnout GPX","Přečíst recenze"],"hu":["▶ ÚTVONAL MEGJELENÍTÉSE","Teljes útvonal mutatása","GPX letöltése","Vélemények olvasása"],"ro":["▶ ARATĂ TRASEUL","Arată traseul complet","Descarcă GPX","Citește recenziile"],"gr":["▶ ΠΡΟΒΟΛΗ ΔΙΑΔΡΟΜΗΣ","Προβολή ολόκληρης διαδρομής","Λήψη GPX","Διαβάστε κριτικές"],"tr":["▶ ROTAYI GÖSTER","Tüm rotayı göster","GPX indir","Yorumları oku"],"ar":["▶ عرض مسار المشي","عرض المسار بالكامل","تنزيل GPX","قراءة التقييمات"],"bg":["▶ ПОКАЖИ МАРШРУТА","Покажи целия маршрут","Изтегли GPX","Прочети отзивите"],"hr":["▶ PRIKAŽI RUTU","Prikaži cijelu rutu","Preuzmi GPX","Pročitaj recenzije"],"et":["▶ NÄITA JALUTUSRADA","Näita kogu marsruuti","Laadi GPX alla","Loe arvustusi"],"ga":["▶ TAISPEÁIN AN BEALACH","Taispeáin an bealach iomlán","Íoslódáil GPX","Léigh léirmheasanna"],"lv":["▶ RĀDĪT MARŠRUTU","Rādīt visu maršrutu","Lejupielādēt GPX","Lasīt atsauksmes"],"lt":["▶ RODYTI MARŠRUTĄ","Rodyti visą maršrutą","Atsisiųsti GPX","Skaityti atsiliepimus"],"mt":["▶ URI R-ROTTA","Uri r-rotta kollha","Niżżel GPX","Aqra r-reviżjonijiet"],"sk":["▶ ZOBRAZIŤ TRASU","Zobraziť celú trasu","Stiahnuť GPX","Prečítať recenzie"],"sl":["▶ PRIKAŽI POT","Prikaži celotno pot","Prenesi GPX","Preberi mnenja"],"uk":["▶ ПОКАЗАТИ ПІШОХІДНИЙ МАРШРУТ","Показати весь маршрут","Завантажити GPX","Читати відгуки"],"fy":["▶ TOAN RINROUTE","Hiele rûte sjen","GPX downloade","Resinsjes lêze"],"ja":["▶ ウォーキングルートを見る","ルート全体を表示","GPXをダウンロード","レビューを読む"],"vi":["▶ XEM TUYẾN ĐI BỘ","Hiển thị toàn bộ lộ trình","Tải GPX","Đọc đánh giá"],"routeChoice":{"nl":["U bent al onderweg. Wilt u verdergaan waar u gebleven was of opnieuw starten?","Verdergaan waar ik gebleven was","Opnieuw starten"],"en":["You have already started. Continue where you left off or start again?","Continue where I left off","Start again"],"de":["Sie haben bereits begonnen. Möchten Sie dort fortfahren, wo Sie aufgehört haben, oder neu starten?","Dort fortfahren, wo ich aufgehört habe","Neu starten"],"fr":["Vous avez déjà commencé. Voulez-vous reprendre là où vous vous êtes arrêté ou recommencer ?","Reprendre là où je me suis arrêté","Recommencer"],"it":["Hai già iniziato. Vuoi riprendere da dove avevi interrotto o ricominciare?","Riprendi da dove eri rimasto","Ricomincia"],"es":["Ya has comenzado. ¿Quieres continuar donde lo dejaste o empezar de nuevo?","Continuar donde lo dejé","Empezar de nuevo"],"pt":["Já começou. Quer continuar de onde ficou ou recomeçar?","Continuar de onde fiquei","Recomeçar"],"da":["Du er allerede begyndt. Vil du fortsætte, hvor du slap, eller starte forfra?","Fortsæt, hvor jeg slap","Start forfra"],"no":["Du har allerede startet. Vil du fortsette der du slapp, eller starte på nytt?","Fortsett der jeg slapp","Start på nytt"],"sv":["Du har redan börjat. Vill du fortsätta där du slutade eller börja om?","Fortsätt där jag slutade","Börja om"],"fi":["Olet jo aloittanut. Haluatko jatkaa siitä, mihin jäit, vai aloittaa uudelleen?","Jatka siitä, mihin jäin","Aloita uudelleen"],"is":["Þú ert þegar byrjuð/aður. Viltu halda áfram þar sem frá var horfið eða byrja aftur?","Halda áfram þar sem frá var horfið","Byrja aftur"],"pl":["Spacer został już rozpoczęty. Czy chcesz kontynuować od miejsca przerwania, czy zacząć od nowa?","Kontynuuj od miejsca przerwania","Zacznij od nowa"],"cs":["Procházku jste již zahájili. Chcete pokračovat tam, kde jste skončili, nebo začít znovu?","Pokračovat tam, kde jsem skončil(a)","Začít znovu"],"hu":["A sétát már elkezdte. Szeretné ott folytatni, ahol abbahagyta, vagy újrakezdeni?","Folytatás ott, ahol abbahagytam","Újrakezdés"],"ro":["Ați început deja. Doriți să continuați de unde ați rămas sau să începeți din nou?","Continuă de unde am rămas","Începe din nou"],"gr":["Έχετε ήδη ξεκινήσει. Θέλετε να συνεχίσετε από εκεί που σταματήσατε ή να αρχίσετε ξανά;","Συνέχεια από εκεί που σταμάτησα","Έναρξη ξανά"],"tr":["Yürüyüşe zaten başladınız. Kaldığınız yerden devam etmek mi, yoksa yeniden başlamak mı istersiniz?","Kaldığım yerden devam et","Yeniden başla"],"ar":["لقد بدأت الجولة بالفعل. هل تريد المتابعة من حيث توقفت أم البدء من جديد؟","المتابعة من حيث توقفت","البدء من جديد"],"bg":["Вече сте започнали. Искате ли да продължите оттам, докъдето сте стигнали, или да започнете отново?","Продължи оттам, докъдето стигнах","Започни отново"],"hr":["Već ste započeli šetnju. Želite li nastaviti gdje ste stali ili krenuti ispočetka?","Nastavi gdje sam stao/la","Kreni ispočetka"],"et":["Olete juba alustanud. Kas soovite jätkata sealt, kus pooleli jäite, või alustada uuesti?","Jätka sealt, kus pooleli jäin","Alusta uuesti"],"ga":["Tá tú tosaithe cheana féin. Ar mhaith leat leanúint ón áit ar stop tú nó tosú arís?","Lean ar aghaidh ón áit ar stop mé","Tosaigh arís"],"lv":["Jūs jau esat sācis. Vai vēlaties turpināt no vietas, kur apstājāties, vai sākt no jauna?","Turpināt no vietas, kur apstājos","Sākt no jauna"],"lt":["Jau pradėjote. Ar norite tęsti nuo tos vietos, kur baigėte, ar pradėti iš naujo?","Tęsti nuo tos vietos, kur baigiau","Pradėti iš naujo"],"mt":["Diġà bdejt. Trid tkompli minn fejn waqaft jew terġa’ tibda?","Kompli minn fejn waqaft","Ibda mill-ġdid"],"sk":["Prechádzku ste už začali. Chcete pokračovať tam, kde ste skončili, alebo začať znova?","Pokračovať tam, kde som skončil(a)","Začať znova"],"sl":["Sprehod ste že začeli. Želite nadaljevati tam, kjer ste končali, ali začeti znova?","Nadaljuj tam, kjer sem končal(a)","Začni znova"],"uk":["Ви вже розпочали прогулянку. Продовжити з місця, де ви зупинилися, чи почати спочатку?","Продовжити з місця зупинки","Почати спочатку"],"fy":["Do bist al begûn. Wolst fierdergean dêr’tst bleaun bist of opnij begjinne?","Fierdergean dêr’t ik bleaun bin","Opnij begjinne"],"ja":["すでに歩き始めています。前回の続きから再開しますか、それとも最初から始めますか？","続きから再開","最初から始める"],"vi":["Bạn đã bắt đầu chuyến đi. Bạn muốn tiếp tục từ chỗ đã dừng hay bắt đầu lại?","Tiếp tục từ chỗ đã dừng","Bắt đầu lại"]}};
 const navigateLabels={
  nl:"Navigeer naar dichtstbijzijnde halte",en:"Navigate to nearest stop",de:"Zur nächsten Haltestelle navigieren",fr:"Naviguer vers l’arrêt le plus proche",
- es:"Navegar a la parada más cercana",it:"Naviga alla fermata più vicina",pt:"Navegar para a paragem mais próxima",da:"Naviger til nærmeste stop",no:"Naviger til nærmeste stopp",sv:"Navigera till närmaste stopp",fi:"Navigoi lähimmälle pysäkille",pl:"Nawiguj do najbliższego przystanku"
+ es:"Navegar a la parada más cercana",it:"Naviga alla fermata più vicina",pt:"Navegar para a paragem mais próxima",da:"Naviger til nærmeste stop",no:"Naviger til nærmeste stopp",sv:"Navigera till närmaste stopp",fi:"Navigoi lähimmälle pysäkille",pl:"Nawiguj do najbliższego przystanku",is:"Farðu að næsta stoppi",cs:"Navigovat k nejbližší zastávce",
+ hu:"Navigálás a legközelebbi megállóhoz",ro:"Navighează către cea mai apropiată oprire",gr:"Πλοήγηση στην πλησιέστερη στάση",tr:"En yakın durağa git",ar:"انتقل إلى أقرب محطة",bg:"Навигирай до най-близката спирка",hr:"Navigiraj do najbliže postaje",et:"Navigeeri lähima peatuseni",ga:"Nasclean chuig an stad is gaire",lv:"Navigēt uz tuvāko pieturu",lt:"Naviguoti į artimiausią stotelę",mt:"Innaviga lejn l-eqreb waqfa",sk:"Navigovať k najbližšej zastávke",sl:"Navigacija do najbližje postaje",uk:"Прокласти маршрут до найближчої зупинки",fy:"Navigearje nei de tichtstbye halte",ja:"最寄りのスポットへの道順",vi:"Điều hướng đến điểm dừng gần nhất"
 };
 let currentLang="nl";
 const map=L.map("map",{zoomControl:true}).setView([51.5318,4.2208],16);
@@ -276,7 +325,11 @@ const feedbackUi={
  lt:{button:"Įvertinti pasivaikščiojimą",title:"Kaip jums apskritai patiko pasivaikščiojimas?",intro:"Jūsų atsiliepimas padeda tobulinti audiomaršrutą.",rating:"Skirkite 1–5 žvaigždutes",scale:"1 = prastai · 5 = puikiai",comment:"Komentaras (nebūtinas)",placeholder:"Kas patiko arba ką galėtume patobulinti?",submit:"Siųsti įvertinimą",thanks:"Ačiū už įvertinimą!",error:"Nepavyko išsiųsti. Patikrinkite ryšį ir bandykite dar kartą.",privacy:"Anonimiškai: saugome tik kalbą, laiką, įvertinimą ir neprivalomą komentarą. Nenurodykite vardų ar kontaktų."},
  mt:{button:"Ivvaluta l-mixja",title:"B’mod ġenerali, kif għoġbitek il-mixja?",intro:"Il-feedback tiegħek jgħinna ntejbu l-mixja awdjo.",rating:"Agħti minn 1 sa 5 stilel",scale:"1 = ħażina · 5 = eċċellenti",comment:"Kumment (mhux obbligatorju)",placeholder:"X’għoġbok jew x’nistgħu ntejbu?",submit:"Ibgħat il-valutazzjoni",thanks:"Grazzi tal-feedback tiegħek!",error:"Ma rnexxilniex nibagħtu. Iċċekkja l-konnessjoni u erġa’ pprova.",privacy:"Anonimu: naħżnu biss il-lingwa, il-ħin, il-punteġġ u kumment mhux obbligatorju. Daħħalx ismijiet jew dettalji ta’ kuntatt."},
  sk:{button:"Ohodnotiť prechádzku",title:"Ako sa vám prechádzka celkovo páčila?",intro:"Vaša spätná väzba nám pomôže zlepšiť audio prechádzku.",rating:"Dajte 1 až 5 hviezdičiek",scale:"1 = zlá · 5 = výborná",comment:"Komentár (voliteľný)",placeholder:"Čo sa vám páčilo alebo čo môžeme zlepšiť?",submit:"Odoslať hodnotenie",thanks:"Ďakujeme za hodnotenie!",error:"Odoslanie sa nepodarilo. Skontrolujte pripojenie a skúste znova.",privacy:"Anonymne: ukladáme iba jazyk, čas, hodnotenie a voliteľný komentár. Neuvádzajte mená ani kontaktné údaje."},
- sl:{button:"Oceni sprehod",title:"Kako vam je bil sprehod na splošno všeč?",intro:"Vaše mnenje nam pomaga izboljšati zvočni sprehod.",rating:"Dodelite 1–5 zvezdic",scale:"1 = slabo · 5 = odlično",comment:"Komentar (neobvezno)",placeholder:"Kaj vam je bilo všeč ali kaj bi lahko izboljšali?",submit:"Pošlji oceno",thanks:"Hvala za vaše mnenje!",error:"Pošiljanje ni uspelo. Preverite povezavo in poskusite znova.",privacy:"Anonimno: shranimo samo jezik, čas, oceno in neobvezen komentar. Ne vnašajte imen ali kontaktnih podatkov."}
+ sl:{button:"Oceni sprehod",title:"Kako vam je bil sprehod na splošno všeč?",intro:"Vaše mnenje nam pomaga izboljšati zvočni sprehod.",rating:"Dodelite 1–5 zvezdic",scale:"1 = slabo · 5 = odlično",comment:"Komentar (neobvezno)",placeholder:"Kaj vam je bilo všeč ali kaj bi lahko izboljšali?",submit:"Pošlji oceno",thanks:"Hvala za vaše mnenje!",error:"Pošiljanje ni uspelo. Preverite povezavo in poskusite znova.",privacy:"Anonimno: shranimo samo jezik, čas, oceno in neobvezen komentar. Ne vnašajte imen ali kontaktnih podatkov."},
+ uk:{button:"Оцініть прогулянку",title:"Як вам загалом сподобалася прогулянка?",intro:"Ваш відгук допоможе нам покращити аудіопрогулянку.",rating:"Поставте від 1 до 5 зірок",scale:"1 = погано · 5 = чудово",comment:"Коментар (необов’язково)",placeholder:"Що вам сподобалося або що можна покращити?",submit:"Надіслати відгук",thanks:"Дякуємо за ваш відгук!",error:"Не вдалося надіслати. Перевірте з’єднання та спробуйте ще раз.",privacy:"Анонімно: ми зберігаємо лише вибрану мову, час, оцінку та необов’язковий коментар. Не вказуйте імена чи контактні дані."},
+ fy:{button:"Beoardielje de kuier",title:"Hoe fûnst de kuier yn it algemien?",intro:"Dyn beoardieling helpt ús de audiokuier te ferbetterjen.",rating:"Jou 1 oant 5 stjerren",scale:"1 = net goed · 5 = poerbêst",comment:"Opmerking (opsjoneel)",placeholder:"Wat fûnst goed of wat kin better?",submit:"Beoardieling ferstjoere",thanks:"Tank foar dyn beoardieling!",error:"Ferstjoeren is net slagge. Kontrolearje de ynternetferbining en besykje it op 'e nij.",privacy:"Anonym: wy bewarje allinnich de keazen taal, it tiidstip, de beoardieling en in eventuele opmerking. Folje gjin nammen of kontaktgegevens yn."},
+ ja:{button:"ウォーキングを評価",title:"ウォーキング全体はいかがでしたか？",intro:"ご感想は音声ガイドの改善に役立ちます。",rating:"星1〜5個で評価してください",scale:"1 = よくない · 5 = すばらしい",comment:"コメント（任意）",placeholder:"よかった点や改善できる点をお聞かせください。",submit:"評価を送信",thanks:"評価をありがとうございます！",error:"送信できませんでした。接続を確認して、もう一度お試しください。",privacy:"匿名です。保存するのは選択した言語、日時、評価、任意のコメントのみです。氏名や連絡先は入力しないでください。"},
+ vi:{button:"Đánh giá chuyến đi bộ",title:"Nhìn chung bạn thấy chuyến đi bộ thế nào?",intro:"Đánh giá của bạn giúp chúng tôi cải thiện tour đi bộ có thuyết minh.",rating:"Chọn từ 1 đến 5 sao",scale:"1 = chưa tốt · 5 = tuyệt vời",comment:"Nhận xét (không bắt buộc)",placeholder:"Bạn thích điều gì hoặc điều gì có thể cải thiện?",submit:"Gửi đánh giá",thanks:"Cảm ơn bạn đã đánh giá!",error:"Không gửi được. Hãy kiểm tra kết nối và thử lại.",privacy:"Ẩn danh: chúng tôi chỉ lưu ngôn ngữ đã chọn, thời gian, điểm đánh giá và nhận xét tùy chọn. Vui lòng không nhập tên hoặc thông tin liên hệ."}
 };
 function feedbackText(){return feedbackUi[currentLang]||feedbackUi.en;}
 function updateFeedbackLabels(){
@@ -284,7 +337,7 @@ function updateFeedbackLabels(){
  document.getElementById("openFeedback").textContent=t.button;
  const reviewMode = typeof feedbackMode !== "undefined" && feedbackMode === "review";
  document.getElementById("feedbackTitle").textContent=reviewMode
-   ? (currentLang==="nl" ? "Schrijf een review" : t.comment)
+   ? (writeReviewLabels[currentLang]||writeReviewLabels.en)
    : (currentLang==="nl" ? "Beoordeel de wandeling" : t.title);
  document.getElementById("feedbackIntro").textContent=reviewMode
    ? (currentLang==="nl" ? "Deel uw ervaring met andere wandelaars. Sterren geven mag, maar hoeft niet." : t.intro)
@@ -582,14 +635,7 @@ function showFeedback(focusReview=false){
  section.hidden=false;
  commentLabel.hidden=!focusReview;
  commentBox.hidden=!focusReview;
- title.textContent=focusReview ? "Schrijf een review" : "Beoordeel de wandeling";
- intro.textContent=focusReview
-   ? "Deel uw ervaring met andere wandelaars. Sterren geven mag, maar hoeft niet."
-   : "Geef de wandeling een beoordeling van 1 tot 5 sterren.";
- document.getElementById("feedbackRatingLabel").textContent=focusReview
-   ? "Wilt u ook sterren geven? (optioneel)"
-   : "Geef 1 tot 5 sterren";
- document.getElementById("feedbackScale").hidden=focusReview;
+ updateFeedbackLabels();
  section.scrollIntoView({behavior:"smooth",block:"center"});
  if(focusReview) setTimeout(()=>commentBox.focus({preventScroll:true}),350);
 }
@@ -610,6 +656,15 @@ function setLang(lang){
   document.getElementById("subtitle").textContent=homeText[2];
   document.getElementById("navigateNearest").textContent=navigateLabels[lang]||navigateLabels.en;
   document.getElementById("openReview").textContent=writeReviewLabels[lang]||writeReviewLabels.en;
+  const routeLabels=routeActionLabels[lang]||routeActionLabels.en;
+  document.getElementById("start").textContent=routeLabels[0];
+  document.getElementById("fit").textContent=routeLabels[1];
+  document.querySelector("a[download]").textContent=routeLabels[2];
+  document.querySelector(".actions button:last-child").textContent=routeLabels[3];
+  const routeChoiceText=routeActionLabels.routeChoice[lang]||routeActionLabels.routeChoice.en;
+  document.getElementById("routeQuestion").textContent=routeChoiceText[0];
+  document.getElementById("continueRoute").textContent=routeChoiceText[1];
+  document.getElementById("restartRoute").textContent=routeChoiceText[2];
   updateFeedbackLabels();
   renderStops();
 }
@@ -632,7 +687,8 @@ async function renderStops(){
   for(const s of ROUTE_MAP_DATA.stops){
     const card=document.createElement("article");
     card.className="card";
-    card.innerHTML=`<div class="stophead"><div class="num">${s.nr}</div><div><div class="stoptitle">${s.title}</div><div class="small">Stop ${s.nr}</div></div></div><div class="small text">Tekst wordt geladen...</div><div class="stop-actions"><button class="btn play">Audio</button><button class="btn kaart">Op kaart</button></div>`;
+    const labels=stopUi[currentLang]||stopUi.en;
+    card.innerHTML=`<div class="stophead"><div class="num">${s.nr}</div><div><div class="stoptitle">${s.title}</div><div class="small">${labels.stop} ${s.nr}</div></div></div><div class="small text">Tekst wordt geladen...</div><div class="stop-actions"><button class="btn play">${labels.audio}</button><button class="btn kaart">${labels.map}</button></div>`;
     box.appendChild(card);
     cards.push([s,card]);
     card.querySelector(".kaart").onclick=()=>{map.setView([s.lat,s.lon],18);stopMarkers[s.nr-1].openPopup();window.scrollTo({top:0,behavior:"smooth"})};
@@ -641,6 +697,11 @@ async function renderStops(){
   await Promise.all(cards.map(async ([s,card])=>{
     const t=await loadText(currentLang,s.nr);
     card.querySelector(".text").textContent=t || "Historische halte van de wandeling.";
+    // Use the translated heading from the stop script as the visible card title.
+    // Dutch place names remain unchanged where a translation keeps the original name.
+    const firstLine=(t||"").split(/\r?\n/,1)[0].trim();
+    const translatedTitle=firstLine.match(/^(?:STOP|ЗУПИНКА|ĐIỂM DỪNG)\s+\d+\s*[—–-]\s*(.+)$/i);
+    if(translatedTitle) card.querySelector(".stoptitle").textContent=translatedTitle[1].trim();
   }));
 }
 let speech=null;
@@ -778,7 +839,7 @@ LANGS.forEach(([code,name,voice,flag]) => {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "lang";
-  button.innerHTML = `<span class="language-flag" aria-hidden="true">${flag}</span><span>${name}</span>`;
+  button.innerHTML = `<span class="flag ${code}" aria-hidden="true"></span><span>${name}</span>`;
   button.addEventListener("click", () => {
     setLang(code);
     document.body.classList.add("language-selected");
