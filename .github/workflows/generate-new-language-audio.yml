@@ -1,0 +1,77 @@
+name: Generate Ukrainian, Japanese and Vietnamese audio
+
+on:
+  push:
+    branches:
+      - improve/localized-stop-controls
+    paths:
+      - "scripts/generate-new-language-audio.py"
+      - "scripts/check-language-readiness.js"
+      - "index.html"
+      - ".github/workflows/generate-new-language-audio.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: tholen-audio-generation
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  generate-audio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out work branch
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install free TTS client
+        run: python -m pip install --disable-pip-version-check edge-tts
+      - name: Generate 45 separate MP3 files
+        run: python scripts/generate-new-language-audio.py
+      - name: Install generated audio into the work branch
+        run: |
+          mkdir -p audio/uk audio/ja audio/vi
+          cp generated-audio/uk/*.mp3 audio/uk/
+          cp generated-audio/ja/*.mp3 audio/ja/
+          cp generated-audio/vi/*.mp3 audio/vi/
+          node scripts/check-audio.js . uk,ja,vi
+          node scripts/check-language-readiness.js
+          python - <<'PY'
+          from pathlib import Path
+          html = Path("index.html").read_text(encoding="utf-8")
+          inline = []
+          for chunk in html.split("<script")[1:]:
+              header, separator, tail = chunk.partition(">")
+              if not separator or "src=" in header.lower():
+                  continue
+              body, closing, _ = tail.partition("</script>")
+              if closing and body.strip():
+                  inline.append(body)
+          if not inline:
+              raise SystemExit("No inline application script found")
+          Path("/tmp/tholen-inline.js").write_text(inline[-1], encoding="utf-8")
+          PY
+          node --check /tmp/tholen-inline.js
+          node --check teksten-data-uk.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audio/uk audio/ja audio/vi
+          if git diff --cached --quiet; then
+            echo "No audio changes to commit."
+          else
+            git commit -m "Add 45 generated MP3s for Ukrainian Japanese and Vietnamese"
+            git push origin HEAD:improve/localized-stop-controls
+          fi
+      - name: Publish generated audio as workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tholen-audio-uk-ja-vi
+          path: generated-audio/
+          if-no-files-found: error
+          retention-days: 14
