@@ -81,15 +81,14 @@ SEMAPHORE = asyncio.Semaphore(4)\n\nasync def generate(language, number, raw):
     raise RuntimeError(f"{language} stop {number:02d} failed: {last_error}")
 
 async def main():
-    total = 0
+    tasks = []
     for language in VOICES:
         texts = load_texts(language)
         for number in range(1, 16):
-            target = await generate(language, number, texts[number])
-            print(f"OK {target.relative_to(ROOT)} ({target.stat().st_size} bytes)")
-            total += 1
-    if total != 45:
-        raise RuntimeError(f"Generated {total} files, expected 45")
+            tasks.append(generate(language, number, texts[number]))
+    results = await asyncio.gather(*tasks)
+    if len(results) != 45:
+        raise RuntimeError(f"Generated {len(results)} files, expected 45")
     print("SUCCESS: all 45 separate MP3 files generated.", flush=True)
 
 if __name__ == "__main__":
