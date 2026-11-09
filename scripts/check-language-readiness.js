@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
-// Structural release gate for the four prepared languages.
+// Structural release gate for the three prepared languages.
 // Usage: node scripts/check-language-readiness.js [repo-root]
 const fs = require("node:fs");
 const path = require("node:path");
@@ -12,8 +12,7 @@ const index = fs.existsSync(indexPath) ? fs.readFileSync(indexPath, "utf8") : ""
 const languages = [
   { code: "uk", name: "Ukrainian", source: "teksten-data-uk.js" },
   { code: "ja", name: "Japanese", source: null },
-  { code: "vi", name: "Vietnamese", source: null },
-  { code: "fy", name: "Frysk (Fryslân)", source: null }
+  { code: "vi", name: "Vietnamese", source: null }
 ];
 const uiDictionaries = [
   "ui", "stopUi", "feedbackUi", "writeReviewLabels",

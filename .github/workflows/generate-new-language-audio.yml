@@ -1,0 +1,37 @@
+name: Generate Ukrainian, Japanese and Vietnamese audio
+
+on:
+  push:
+    branches:
+      - improve/localized-stop-controls
+    paths:
+      - "scripts/generate-new-language-audio.py"
+      - "scripts/check-language-readiness.js"
+      - ".github/workflows/generate-new-language-audio.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-audio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out work branch
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install free TTS client
+        run: python -m pip install --disable-pip-version-check edge-tts
+      - name: Generate 45 separate MP3 files
+        run: python scripts/generate-new-language-audio.py
+      - name: Publish generated audio as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tholen-audio-uk-ja-vi
+          path: generated-audio/
+          if-no-files-found: error
+          retention-days: 14
