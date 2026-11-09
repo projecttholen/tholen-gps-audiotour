@@ -18,7 +18,7 @@ De speler in de website gebruikt deze paden rechtstreeks. Een taal mag pas aan d
 | Japans | ja | 15/15 | 15/15 | technisch compleet; luister- en moedertaalcontrole open |
 | Vietnamees | vi | 15/15 | 15/15 | technisch compleet; luister- en moedertaalcontrole open |
 
-**Let op:** de nieuwe teksten zijn als complete eerste vertaalversies voorbereid. Laat ze vóór opname bij voorkeur nalezen door een moedertaalspreker, met extra aandacht voor plaatsnamen, historische termen en uitspraak.
+**Let op:** de teksten zijn complete eerste vertaalversies. Laat ze vóór livegebruik bij voorkeur nalezen door een moedertaalspreker, met extra aandacht voor plaatsnamen, historische termen en uitspraak.
 
 ## Controle per audiobestand
 
