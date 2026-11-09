@@ -186,7 +186,8 @@ const LANGS = [
  ["ar","العربية المغربية","ar-MA","🇲🇦"],["bg","Български","bg-BG","🇧🇬"],
  ["hr","Hrvatski","hr-HR","🇭🇷"],["et","Eesti","et-EE","🇪🇪"],["ga","Gaeilge","ga-IE","🇮🇪"],
  ["lv","Latviešu","lv-LV","🇱🇻"],["lt","Lietuvių","lt-LT","🇱🇹"],["mt","Malti","mt-MT","🇲🇹"],
- ["sk","Slovenčina","sk-SK","🇸🇰"],["sl","Slovenščina","sl-SI","🇸🇮"]
+ ["sk","Slovenčina","sk-SK","🇸🇰"],["sl","Slovenščina","sl-SI","🇸🇮"],
+ ["uk","Українська","uk-UA","🇺🇦"],["ja","日本語","ja-JP","🇯🇵"],["vi","Tiếng Việt","vi-VN","🇻🇳"]
 ];
 const ui={
  nl:["Tholen door de tijd","Volg de werkelijk gelopen route en ontdek de historische binnenstad halte voor halte.","15 haltes · route opgenomen met GPS"],
@@ -218,11 +219,11 @@ const ui={
  sk:["Tholen v priebehu času","Sledujte zaznamenanú trasu a objavujte historické mesto zastávku po zastávke.","15 zastávok · GPS trasa"],
  sl:["Tholen skozi čas","Sledite posneti poti in odkrivajte zgodovinsko mesto, postajo za postajo.","15 postaj · pot GPS"],
  uk:["Тхолен крізь віки","Пройдіть фактичним маршрутом і відкрийте для себе історичний центр міста — зупинка за зупинкою.","15 зупинок · маршрут записано за допомогою GPS"],
- fy:["Tholen troch de tiid","Folgje de rûte dy't echt rûn is en ûntdek de histoaryske binnenstêd, halte foar halte.","15 haltes · rûte fêstlein mei GPS"],
+ 
  ja:["時をたどるトーレン","実際に歩いたルートをたどりながら、歴史ある街の中心部を各スポットごとに発見しましょう。","15か所 · GPSで記録したルート"],
  vi:["Tholen qua dòng thời gian","Đi theo lộ trình thực tế và khám phá khu phố cổ qua từng điểm dừng.","15 điểm dừng · lộ trình được ghi bằng GPS"]
 };
-const writeReviewLabels={nl:"Schrijf een review",en:"Write a review",de:"Rezension schreiben",fr:"Écrire un avis",fi:"Kirjoita arvostelu",sv:"Skriv en recension",no:"Skriv en anmeldelse",da:"Skriv en anmeldelse",is:"Skrifa umsögn",es:"Escribir una reseña",it:"Scrivi una recensione",pt:"Escrever uma avaliação",pl:"Napisz opinię",cs:"Napsat recenzi",hu:"Írjon véleményt",ro:"Scrie o recenzie",gr:"Γράψτε μια κριτική",tr:"Yorum yazın",ar:"اكتب مراجعة",bg:"Напишете отзив",hr:"Napišite recenziju",et:"Kirjuta arvustus",ga:"Scríobh léirmheas",lv:"Uzrakstīt atsauksmi",lt:"Parašyti atsiliepimą",mt:"Ikteb reviżjoni",sk:"Napísať recenziu",sl:"Napišite oceno",uk:"Залишити відгук",fy:"Skriuw in resinsje",ja:"レビューを書く",vi:"Viết đánh giá"};
+const writeReviewLabels={nl:"Schrijf een review",en:"Write a review",de:"Rezension schreiben",fr:"Écrire un avis",fi:"Kirjoita arvostelu",sv:"Skriv en recension",no:"Skriv en anmeldelse",da:"Skriv en anmeldelse",is:"Skrifa umsögn",es:"Escribir una reseña",it:"Scrivi una recensione",pt:"Escrever uma avaliação",pl:"Napisz opinię",cs:"Napsat recenzi",hu:"Írjon véleményt",ro:"Scrie o recenzie",gr:"Γράψτε μια κριτική",tr:"Yorum yazın",ar:"اكتب مراجعة",bg:"Напишете отзив",hr:"Napišite recenziju",et:"Kirjuta arvustus",ga:"Scríobh léirmheas",lv:"Uzrakstīt atsauksmi",lt:"Parašyti atsiliepimą",mt:"Ikteb reviżjoni",sk:"Napísať recenziu",sl:"Napišite oceno",uk:"Залишити відгук",ja:"レビューを書く",vi:"Viết đánh giá"};
 const stopUi={
  nl:{stop:"Halte",audio:"Audio afspelen",map:"Op kaart"},
  en:{stop:"Stop",audio:"Play audio",map:"Show on map"},
@@ -253,7 +254,7 @@ const stopUi={
  sk:{stop:"Zastávka",audio:"Prehrať audio",map:"Zobraziť na mape"},
  sl:{stop:"Postaja",audio:"Predvajaj zvok",map:"Prikaži na zemljevidu"},
  uk:{stop:"Зупинка",audio:"Відтворити аудіо",map:"Показати на карті"},
- fy:{stop:"Halte",audio:"Audio ôfspiele",map:"Op de kaart sjen"},
+ 
  ja:{stop:"スポット",audio:"音声を再生",map:"地図で表示"},
  vi:{stop:"Điểm dừng",audio:"Phát âm thanh",map:"Hiển thị trên bản đồ"}
 };
@@ -261,7 +262,7 @@ const routeActionLabels={"nl":["▶ TOON WANDELROUTE","Route volledig tonen","GP
 const navigateLabels={
  nl:"Navigeer naar dichtstbijzijnde halte",en:"Navigate to nearest stop",de:"Zur nächsten Haltestelle navigieren",fr:"Naviguer vers l’arrêt le plus proche",
  es:"Navegar a la parada más cercana",it:"Naviga alla fermata più vicina",pt:"Navegar para a paragem mais próxima",da:"Naviger til nærmeste stop",no:"Naviger til nærmeste stopp",sv:"Navigera till närmaste stopp",fi:"Navigoi lähimmälle pysäkille",pl:"Nawiguj do najbliższego przystanku",is:"Farðu að næsta stoppi",cs:"Navigovat k nejbližší zastávce",
- hu:"Navigálás a legközelebbi megállóhoz",ro:"Navighează către cea mai apropiată oprire",gr:"Πλοήγηση στην πλησιέστερη στάση",tr:"En yakın durağa git",ar:"انتقل إلى أقرب محطة",bg:"Навигирай до най-близката спирка",hr:"Navigiraj do najbliže postaje",et:"Navigeeri lähima peatuseni",ga:"Nasclean chuig an stad is gaire",lv:"Navigēt uz tuvāko pieturu",lt:"Naviguoti į artimiausią stotelę",mt:"Innaviga lejn l-eqreb waqfa",sk:"Navigovať k najbližšej zastávke",sl:"Navigacija do najbližje postaje",uk:"Прокласти маршрут до найближчої зупинки",fy:"Navigearje nei de tichtstbye halte",ja:"最寄りのスポットへの道順",vi:"Điều hướng đến điểm dừng gần nhất"
+ hu:"Navigálás a legközelebbi megállóhoz",ro:"Navighează către cea mai apropiată oprire",gr:"Πλοήγηση στην πλησιέστερη στάση",tr:"En yakın durağa git",ar:"انتقل إلى أقرب محطة",bg:"Навигирай до най-близката спирка",hr:"Navigiraj do najbliže postaje",et:"Navigeeri lähima peatuseni",ga:"Nasclean chuig an stad is gaire",lv:"Navigēt uz tuvāko pieturu",lt:"Naviguoti į artimiausią stotelę",mt:"Innaviga lejn l-eqreb waqfa",sk:"Navigovať k najbližšej zastávke",sl:"Navigacija do najbližje postaje",uk:"Прокласти маршрут до найближчої зупинки",ja:"最寄りのスポットへの道順",vi:"Điều hướng đến điểm dừng gần nhất"
 };
 let currentLang="nl";
 const map=L.map("map",{zoomControl:true}).setView([51.5318,4.2208],16);
@@ -325,7 +326,7 @@ const feedbackUi={
  sk:{button:"Ohodnotiť prechádzku",title:"Ako sa vám prechádzka celkovo páčila?",intro:"Vaša spätná väzba nám pomôže zlepšiť audio prechádzku.",rating:"Dajte 1 až 5 hviezdičiek",scale:"1 = zlá · 5 = výborná",comment:"Komentár (voliteľný)",placeholder:"Čo sa vám páčilo alebo čo môžeme zlepšiť?",submit:"Odoslať hodnotenie",thanks:"Ďakujeme za hodnotenie!",error:"Odoslanie sa nepodarilo. Skontrolujte pripojenie a skúste znova.",privacy:"Anonymne: ukladáme iba jazyk, čas, hodnotenie a voliteľný komentár. Neuvádzajte mená ani kontaktné údaje."},
  sl:{button:"Oceni sprehod",title:"Kako vam je bil sprehod na splošno všeč?",intro:"Vaše mnenje nam pomaga izboljšati zvočni sprehod.",rating:"Dodelite 1–5 zvezdic",scale:"1 = slabo · 5 = odlično",comment:"Komentar (neobvezno)",placeholder:"Kaj vam je bilo všeč ali kaj bi lahko izboljšali?",submit:"Pošlji oceno",thanks:"Hvala za vaše mnenje!",error:"Pošiljanje ni uspelo. Preverite povezavo in poskusite znova.",privacy:"Anonimno: shranimo samo jezik, čas, oceno in neobvezen komentar. Ne vnašajte imen ali kontaktnih podatkov."},
  uk:{button:"Оцініть прогулянку",title:"Як вам загалом сподобалася прогулянка?",intro:"Ваш відгук допоможе нам покращити аудіопрогулянку.",rating:"Поставте від 1 до 5 зірок",scale:"1 = погано · 5 = чудово",comment:"Коментар (необов’язково)",placeholder:"Що вам сподобалося або що можна покращити?",submit:"Надіслати відгук",thanks:"Дякуємо за ваш відгук!",error:"Не вдалося надіслати. Перевірте з’єднання та спробуйте ще раз.",privacy:"Анонімно: ми зберігаємо лише вибрану мову, час, оцінку та необов’язковий коментар. Не вказуйте імена чи контактні дані."},
- fy:{button:"Beoardielje de kuier",title:"Hoe fûnst de kuier yn it algemien?",intro:"Dyn beoardieling helpt ús de audiokuier te ferbetterjen.",rating:"Jou 1 oant 5 stjerren",scale:"1 = net goed · 5 = poerbêst",comment:"Opmerking (opsjoneel)",placeholder:"Wat fûnst goed of wat kin better?",submit:"Beoardieling ferstjoere",thanks:"Tank foar dyn beoardieling!",error:"Ferstjoeren is net slagge. Kontrolearje de ynternetferbining en besykje it op 'e nij.",privacy:"Anonym: wy bewarje allinnich de keazen taal, it tiidstip, de beoardieling en in eventuele opmerking. Folje gjin nammen of kontaktgegevens yn."},
+ 
  ja:{button:"ウォーキングを評価",title:"ウォーキング全体はいかがでしたか？",intro:"ご感想は音声ガイドの改善に役立ちます。",rating:"星1〜5個で評価してください",scale:"1 = よくない · 5 = すばらしい",comment:"コメント（任意）",placeholder:"よかった点や改善できる点をお聞かせください。",submit:"評価を送信",thanks:"評価をありがとうございます！",error:"送信できませんでした。接続を確認して、もう一度お試しください。",privacy:"匿名です。保存するのは選択した言語、日時、評価、任意のコメントのみです。氏名や連絡先は入力しないでください。"},
  vi:{button:"Đánh giá chuyến đi bộ",title:"Nhìn chung bạn thấy chuyến đi bộ thế nào?",intro:"Đánh giá của bạn giúp chúng tôi cải thiện tour đi bộ có thuyết minh.",rating:"Chọn từ 1 đến 5 sao",scale:"1 = chưa tốt · 5 = tuyệt vời",comment:"Nhận xét (không bắt buộc)",placeholder:"Bạn thích điều gì hoặc điều gì có thể cải thiện?",submit:"Gửi đánh giá",thanks:"Cảm ơn bạn đã đánh giá!",error:"Không gửi được. Hãy kiểm tra kết nối và thử lại.",privacy:"Ẩn danh: chúng tôi chỉ lưu ngôn ngữ đã chọn, thời gian, điểm đánh giá và nhận xét tùy chọn. Vui lòng không nhập tên hoặc thông tin liên hệ."}
 };
