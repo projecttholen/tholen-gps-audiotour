@@ -41,10 +41,16 @@ jobs:
           node scripts/check-audio.js . uk,ja,vi
           node scripts/check-language-readiness.js
           python - <<'PY'
-          import re
           from pathlib import Path
           html = Path("index.html").read_text(encoding="utf-8")
-          inline = re.findall(r"<script(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)</script>", html, re.I)
+          inline = []
+          for chunk in html.split("<script")[1:]:
+              header, separator, tail = chunk.partition(">")
+              if not separator or "src=" in header.lower():
+                  continue
+              body, closing, _ = tail.partition("</script>")
+              if closing and body.strip():
+                  inline.append(body)
           if not inline:
               raise SystemExit("No inline application script found")
           Path("/tmp/tholen-inline.js").write_text(inline[-1], encoding="utf-8")
