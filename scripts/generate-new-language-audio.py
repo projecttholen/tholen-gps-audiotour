@@ -70,18 +70,18 @@ async def generate(language, number, raw):
     target = target_dir / f"stop-{number:02d}.mp3"
     text = spoken_text(raw)
     last_error = None
-    for attempt in range(3):
+    for attempt in range(6):
         try:
             communicate = edge_tts.Communicate(text, voice, rate="-5%", volume="+0%", pitch="+0Hz")
             async with SEMAPHORE:
-                await asyncio.wait_for(communicate.save(str(target)), timeout=90)
+                await asyncio.wait_for(communicate.save(str(target)), timeout=150)
             if target.exists() and target.stat().st_size >= 1024:
                 print(f"OK {target.relative_to(ROOT)} ({target.stat().st_size} bytes)", flush=True)
                 return target
             raise RuntimeError("TTS returned an empty or too-small MP3")
         except Exception as exc:
             last_error = exc
-            await asyncio.sleep(2 + attempt * 3)
+            await asyncio.sleep(min(5 + attempt * 5, 30))
     raise RuntimeError(f"{language} stop {number:02d} failed: {last_error}")
 
 async def main():
