@@ -33,6 +33,7 @@ jobs:
       - name: Generate 45 separate MP3 files
         run: python scripts/generate-new-language-audio.py
       - name: Publish generated audio as workflow artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: tholen-audio-uk-ja-vi
