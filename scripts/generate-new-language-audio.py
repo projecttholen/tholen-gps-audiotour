@@ -61,7 +61,7 @@ def spoken_text(raw):
         raise RuntimeError("Extracted narration is unexpectedly short")
     return text
 
-async def generate(language, number, raw):
+SEMAPHORE = asyncio.Semaphore(4)\n\nasync def generate(language, number, raw):
     voice = VOICES[language]
     target_dir = OUTPUT / language
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -71,9 +71,9 @@ async def generate(language, number, raw):
     for attempt in range(3):
         try:
             communicate = edge_tts.Communicate(text, voice, rate="-5%", volume="+0%", pitch="+0Hz")
-            await communicate.save(str(target))
+            async with SEMAPHORE:\n                await asyncio.wait_for(communicate.save(str(target)), timeout=90)
             if target.exists() and target.stat().st_size >= 1024:
-                return target
+                print(f"OK {target.relative_to(ROOT)} ({target.stat().st_size} bytes)", flush=True)\n                return target
             raise RuntimeError("TTS returned an empty or too-small MP3")
         except Exception as exc:
             last_error = exc
@@ -90,7 +90,7 @@ async def main():
             total += 1
     if total != 45:
         raise RuntimeError(f"Generated {total} files, expected 45")
-    print("SUCCESS: all 45 separate MP3 files generated.")
+    print("SUCCESS: all 45 separate MP3 files generated.", flush=True)
 
 if __name__ == "__main__":
     asyncio.run(main())
