@@ -656,6 +656,8 @@ const gpsAutoLabels = {
 let gpsWatchId = null;
 const gpsAutoPlayedStops = new Set();
 let gpsStatusKey = "off";
+let gpsCandidateStop = null;
+let gpsCandidateFixes = 0;
 function gpsAutoText(key,nr){
  const labels=gpsAutoLabels[currentLang]||gpsAutoLabels.en;
  return (labels[key]||gpsAutoLabels.en[key]).replace("{nr}",String(nr||""));
@@ -683,15 +685,20 @@ function handleGpsAutoPosition(position){
   if(d<nearestDistance){nearest=stop;nearestDistance=d;}
  }
  if(nearest && nearestDistance<=22 && !gpsAutoPlayedStops.has(nearest.nr)){
+  if(gpsCandidateStop===nearest.nr)gpsCandidateFixes++;
+  else{gpsCandidateStop=nearest.nr;gpsCandidateFixes=1;}
+  if(gpsCandidateFixes<2){gpsStatusKey="on";updateGpsAutoLabels();return;}
   const player=window.tholenAudio;
   if(player && !player.paused && !player.ended)return;
   gpsAutoPlayedStops.add(nearest.nr);
+  gpsCandidateStop=null;gpsCandidateFixes=0;
   gpsStatusKey="near";
   updateGpsAutoLabels();
   const card=document.querySelectorAll("#stops article")[nearest.nr-1]||null;
   playStop(nearest.nr,card,true);
   return;
  }
+ gpsCandidateStop=null;gpsCandidateFixes=0;
  if(gpsStatusKey!=="near")gpsStatusKey="on";
  updateGpsAutoLabels();
 }
