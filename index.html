@@ -130,6 +130,8 @@ footer{padding:22px 14px 40px;text-align:center;font-size:12px;opacity:.65}
     <div class="actions">
       <button class="btn startbtn" id="start">▶ START DE WANDELING</button>
       <button class="btn" id="navigateNearest" type="button">Navigeer naar dichtstbijzijnde halte</button>
+      <button class="btn" id="gpsAutoToggle" type="button" aria-pressed="false">Automatisch afspelen bij halte (GPS) starten</button>
+      <p id="gpsAutoStatus" role="status" aria-live="polite" class="small" style="flex-basis:100%;margin:0">GPS staat uit. Start deze functie om audio bij aankomst automatisch af te spelen.</p>
       <a class="btn" href="Gps_Audio_Stadswandeling_.gpx" download>GPX downloaden</a>
       <button class="btn" id="fit">Route volledig tonen</button>
       <button class="btn" id="openFeedback" type="button">Beoordeel wandeling</button>
@@ -642,6 +644,68 @@ function showFeedback(focusReview=false){
 function distanceMeters(lat1,lon1,lat2,lon2){const r=x=>x*Math.PI/180;const a=Math.sin(r(lat2-lat1)/2)**2+Math.cos(r(lat1))*Math.cos(r(lat2))*Math.sin(r(lon2-lon1)/2)**2;return 6371000*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
 document.getElementById("navigateNearest").onclick=()=>{const b=document.getElementById("navigateNearest");if(!navigator.geolocation){alert("Deze browser ondersteunt geen GPS-locatie.");return;}const old=b.textContent;b.disabled=true;b.textContent="Locatie bepalen…";navigator.geolocation.getCurrentPosition(p=>{let nearest=null,nd=Infinity;for(const s of ROUTE_MAP_DATA.stops){const d=distanceMeters(p.coords.latitude,p.coords.longitude,s.lat,s.lon);if(d<nd){nearest=s;nd=d;}}b.disabled=false;b.textContent=old;if(nearest)location.href=`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${nearest.lat},${nearest.lon}`)}&travelmode=walking`;},e=>{b.disabled=false;b.textContent=old;alert(e.code===1?"Locatietoegang geweigerd. Sta locatie toe om te navigeren.":"Je locatie kon niet worden bepaald. Controleer GPS en probeer opnieuw.");},{enableHighAccuracy:true,maximumAge:0,timeout:15000});};
 
+const gpsAutoLabels = {
+ nl:{start:"Automatisch afspelen bij halte (GPS) starten",stop:"GPS automatisch afspelen stoppen",off:"GPS staat uit. Start deze functie om audio bij aankomst automatisch af te spelen.",on:"GPS actief. De audio start zodra u dicht genoeg bij een halte bent.",accuracy:"GPS-signaal nog niet nauwkeurig genoeg; wacht op een betere locatie.",near:"Halte {nr} gevonden. Audio wordt gestart.",blocked:"Automatisch afspelen is door de browser geblokkeerd. Gebruik de afspeelknop bij de halte.",error:"GPS-locatie kon niet worden bepaald. Controleer de locatietoestemming."},
+ en:{start:"Start automatic audio at stops (GPS)",stop:"Stop automatic GPS audio",off:"GPS is off. Start this feature to play audio when you arrive at a stop.",on:"GPS is active. Audio starts when you are close to a stop.",accuracy:"GPS signal is not accurate enough yet; waiting for a better location.",near:"Stop {nr} detected. Starting audio.",blocked:"The browser blocked automatic playback. Use the stop's play button.",error:"Could not get your GPS location. Check location permission."},
+ de:{start:"Automatische Audiowiedergabe an Haltestellen starten (GPS)",stop:"Automatische GPS-Audiowiedergabe stoppen",off:"GPS ist ausgeschaltet. Starten Sie die Funktion für Audio bei Ankunft.",on:"GPS ist aktiv. Audio startet in der Nähe einer Haltestelle.",accuracy:"GPS-Signal noch nicht genau genug; warte auf bessere Daten.",near:"Haltestelle {nr} erkannt. Audio startet.",blocked:"Der Browser hat die automatische Wiedergabe blockiert. Bitte die Wiedergabetaste nutzen.",error:"GPS-Standort konnte nicht ermittelt werden. Prüfen Sie die Berechtigung."},
+ fr:{start:"Activer la lecture automatique aux étapes (GPS)",stop:"Arrêter la lecture GPS automatique",off:"GPS désactivé. Activez cette fonction pour lancer l’audio à l’arrivée.",on:"GPS actif. L’audio démarre à proximité d’une étape.",accuracy:"Signal GPS pas encore assez précis ; attente d’une meilleure position.",near:"Étape {nr} détectée. Lecture audio.",blocked:"Le navigateur a bloqué la lecture automatique. Utilisez le bouton de lecture.",error:"Position GPS indisponible. Vérifiez l’autorisation."},
+ uk:{start:"Увімкнути автоматичне відтворення біля зупинок (GPS)",stop:"Вимкнути автоматичне відтворення GPS",off:"GPS вимкнено. Увімкніть цю функцію, щоб аудіо запускалося біля зупинки.",on:"GPS активний. Аудіо запускається поруч із зупинкою.",accuracy:"Сигнал GPS поки недостатньо точний; очікуємо кращі дані.",near:"Зупинку {nr} знайдено. Запускаємо аудіо.",blocked:"Браузер заблокував автоматичне відтворення. Скористайтеся кнопкою відтворення.",error:"Не вдалося визначити GPS. Перевірте дозвіл на геолокацію."},
+ ja:{start:"停留所で音声を自動再生（GPS）",stop:"GPS自動再生を停止",off:"GPSはオフです。到着時の自動再生を開始してください。",on:"GPSは有効です。停留所の近くで音声を再生します。",accuracy:"GPSの精度が不十分です。より正確な位置情報を待っています。",near:"スポット{nr}を検出しました。音声を再生します。",blocked:"ブラウザーが自動再生をブロックしました。再生ボタンを押してください。",error:"GPS位置を取得できません。位置情報の許可を確認してください。"},
+ vi:{start:"Bật tự động phát âm thanh tại điểm dừng (GPS)",stop:"Tắt tự động phát GPS",off:"GPS đang tắt. Bật chức năng này để phát âm thanh khi đến điểm dừng.",on:"GPS đang hoạt động. Âm thanh sẽ phát khi bạn đến gần điểm dừng.",accuracy:"Tín hiệu GPS chưa đủ chính xác; đang chờ vị trí tốt hơn.",near:"Đã phát hiện điểm dừng {nr}. Đang phát âm thanh.",blocked:"Trình duyệt đã chặn tự động phát. Hãy nhấn nút phát tại điểm dừng.",error:"Không lấy được vị trí GPS. Hãy kiểm tra quyền truy cập vị trí."}
+};
+let gpsWatchId = null;
+const gpsAutoPlayedStops = new Set();
+let gpsStatusKey = "off";
+function gpsAutoText(key,nr){
+ const labels=gpsAutoLabels[currentLang]||gpsAutoLabels.en;
+ return (labels[key]||gpsAutoLabels.en[key]).replace("{nr}",String(nr||""));
+}
+function updateGpsAutoLabels(){
+ const button=document.getElementById("gpsAutoToggle");
+ const status=document.getElementById("gpsAutoStatus");
+ if(!button||!status)return;
+ button.textContent=gpsAutoText(gpsWatchId===null?"start":"stop");
+ button.setAttribute("aria-pressed",gpsWatchId===null?"false":"true");
+ status.textContent=gpsAutoText(gpsStatusKey);
+}
+function stopGpsAuto(){
+ if(gpsWatchId!==null && navigator.geolocation) navigator.geolocation.clearWatch(gpsWatchId);
+ gpsWatchId=null;
+ gpsStatusKey="off";
+ updateGpsAutoLabels();
+}
+function handleGpsAutoPosition(position){
+ const accuracy=position.coords.accuracy;
+ if(!Number.isFinite(accuracy)||accuracy>30){gpsStatusKey="accuracy";updateGpsAutoLabels();return;}
+ let nearest=null,nearestDistance=Infinity;
+ for(const stop of ROUTE_MAP_DATA.stops){
+  const d=distanceMeters(position.coords.latitude,position.coords.longitude,stop.lat,stop.lon);
+  if(d<nearestDistance){nearest=stop;nearestDistance=d;}
+ }
+ if(nearest && nearestDistance<=22 && !gpsAutoPlayedStops.has(nearest.nr)){
+  const player=window.tholenAudio;
+  if(player && !player.paused && !player.ended)return;
+  gpsAutoPlayedStops.add(nearest.nr);
+  gpsStatusKey="near";
+  updateGpsAutoLabels();
+  const card=document.querySelectorAll("#stops article")[nearest.nr-1]||null;
+  playStop(nearest.nr,card,true);
+  return;
+ }
+ if(gpsStatusKey!=="near")gpsStatusKey="on";
+ updateGpsAutoLabels();
+}
+document.getElementById("gpsAutoToggle").addEventListener("click",()=>{
+ if(gpsWatchId!==null){stopGpsAuto();return;}
+ if(!navigator.geolocation){gpsStatusKey="error";updateGpsAutoLabels();return;}
+ gpsStatusKey="on";
+ gpsWatchId=navigator.geolocation.watchPosition(handleGpsAutoPosition,()=>{
+  gpsWatchId=null;gpsStatusKey="error";updateGpsAutoLabels();
+ },{enableHighAccuracy:true,maximumAge:1000,timeout:20000});
+ updateGpsAutoLabels();
+});
+
+
 function setLang(lang){
   langbar.classList.remove("open");
   if(window.tholenAudio){window.tholenAudio.pause();window.tholenAudio=null;} currentLang=lang; localStorage.setItem("tholen-lang",lang);
@@ -654,6 +718,7 @@ function setLang(lang){
   document.getElementById("intro").textContent=homeText[1];
   document.getElementById("subtitle").textContent=homeText[2];
   document.getElementById("navigateNearest").textContent=navigateLabels[lang]||navigateLabels.en;
+  updateGpsAutoLabels();
   document.getElementById("openReview").textContent=writeReviewLabels[lang]||writeReviewLabels.en;
   const routeLabels=routeActionLabels[lang]||routeActionLabels.en;
   document.getElementById("start").textContent=routeLabels[0];
@@ -704,7 +769,8 @@ async function renderStops(){
   }));
 }
 let speech=null;
-function playStop(nr,card){
+function playStop(nr,card,automatic=false){
+  if(!card) card=document.querySelectorAll('#stops article')[nr-1]||null;
   if(window.tholenAudio){try{window.tholenAudio.pause();}catch(e){}}
   const lang=(typeof currentLang==="string"&&currentLang)?currentLang:"nl";
   try{fetch("stats.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"audio_start",lang:lang,stop:nr})}).catch(()=>{});}catch(e){}
@@ -712,6 +778,8 @@ function playStop(nr,card){
   const player=new Audio(src);
   window.tholenAudio=player;
   player.play().catch(()=>{
+    if(automatic){gpsStatusKey="blocked";updateGpsAutoLabels();}
+    if(!card)return;
     let p=card.querySelector(".audio-fallback");
     if(!p){
       p=document.createElement("audio");
