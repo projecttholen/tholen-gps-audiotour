@@ -38,7 +38,19 @@ jobs:
           cp generated-audio/uk/*.mp3 audio/uk/
           cp generated-audio/ja/*.mp3 audio/ja/
           cp generated-audio/vi/*.mp3 audio/vi/
+          node scripts/check-audio.js . uk,ja,vi
           node scripts/check-language-readiness.js
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path("index.html").read_text(encoding="utf-8")
+          inline = re.findall(r"<script(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)</script>", html, re.I)
+          if not inline:
+              raise SystemExit("No inline application script found")
+          Path("/tmp/tholen-inline.js").write_text(inline[-1], encoding="utf-8")
+          PY
+          node --check /tmp/tholen-inline.js
+          node --check teksten-data-uk.js
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add audio/uk audio/ja audio/vi
