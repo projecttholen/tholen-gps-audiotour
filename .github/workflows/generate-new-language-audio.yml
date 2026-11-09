@@ -7,6 +7,7 @@ on:
     paths:
       - "scripts/generate-new-language-audio.py"
       - "scripts/check-language-readiness.js"
+      - "index.html"
       - ".github/workflows/generate-new-language-audio.yml"
   workflow_dispatch:
 
