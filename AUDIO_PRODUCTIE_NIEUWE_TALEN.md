@@ -1,6 +1,6 @@
 # Audioproductie – nieuwe talen
 
-Dit document houdt de tekst- en audioproductie bij voor Oekraïens, Japans, Vietnamees en Frysk (Fryslân).
+Dit document houdt de tekst- en audioproductie bij voor Oekraïens, Japans en Vietnamees.
 
 ## Bestandsconventie
 
@@ -17,7 +17,6 @@ De speler in de website gebruikt deze paden rechtstreeks. Een taal mag pas aan d
 | Oekraïens | uk | 15/15 conceptvertaling | 0/15 | geblokkeerd |
 | Japans | ja | 15/15 conceptvertaling | 0/15 | geblokkeerd |
 | Vietnamees | vi | 15/15 conceptvertaling | 0/15 | geblokkeerd |
-| Frysk (Fryslân) | fy | 15/15 conceptvertaling | 0/15 | geblokkeerd |
 
 **Let op:** de nieuwe teksten zijn als complete eerste vertaalversies voorbereid. Laat ze vóór opname bij voorkeur nalezen door een moedertaalspreker, met extra aandacht voor plaatsnamen, historische termen en uitspraak.
 
