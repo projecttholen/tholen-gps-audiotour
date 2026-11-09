@@ -707,7 +707,8 @@ document.getElementById("gpsAutoToggle").addEventListener("click",()=>{
  if(!navigator.geolocation){gpsStatusKey="error";updateGpsAutoLabels();return;}
  gpsStatusKey="on";
  gpsWatchId=navigator.geolocation.watchPosition(handleGpsAutoPosition,()=>{
-  gpsWatchId=null;gpsStatusKey="error";updateGpsAutoLabels();
+  if(gpsWatchId!==null) navigator.geolocation.clearWatch(gpsWatchId);
+  gpsWatchId=null;gpsCandidateStop=null;gpsCandidateFixes=0;gpsStatusKey="error";updateGpsAutoLabels();
  },{enableHighAccuracy:true,maximumAge:1000,timeout:20000});
  updateGpsAutoLabels();
 });
