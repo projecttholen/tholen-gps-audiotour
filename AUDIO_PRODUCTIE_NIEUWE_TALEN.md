@@ -14,9 +14,9 @@ De speler in de website gebruikt deze paden rechtstreeks. Een taal mag pas aan d
 
 | Taal | Code | Teksten | Audio | Activeren |
 |---|---|---:|---:|---|
-| Oekraïens | uk | 15/15 conceptvertaling | 0/15 | geblokkeerd |
-| Japans | ja | 15/15 conceptvertaling | 0/15 | geblokkeerd |
-| Vietnamees | vi | 15/15 conceptvertaling | 0/15 | geblokkeerd |
+| Oekraïens | uk | 15/15 | 15/15 | technisch compleet; luister- en moedertaalcontrole open |
+| Japans | ja | 15/15 | 15/15 | technisch compleet; luister- en moedertaalcontrole open |
+| Vietnamees | vi | 15/15 | 15/15 | technisch compleet; luister- en moedertaalcontrole open |
 
 **Let op:** de nieuwe teksten zijn als complete eerste vertaalversies voorbereid. Laat ze vóór opname bij voorkeur nalezen door een moedertaalspreker, met extra aandacht voor plaatsnamen, historische termen en uitspraak.
 
@@ -64,10 +64,11 @@ Dit controleert de aanwezigheid van 15 teksten per taal, de zes belangrijkste UI
 
 ## Publicatiepoort
 
-Een taal blijft verborgen in de taalkeuze totdat:
+De drie talen staan in de werkversie van de taalkeuze. Publicatie op de live website blijft uitgesteld totdat:
 1. alle 15 vertalingen aanwezig zijn en taalkundig zijn nagekeken;
 2. alle 15 MP3's zijn gegenereerd en gecontroleerd;
-3. de taalinterface volledig is vertaald;
-4. een praktijktest van laden en afspelen is geslaagd.
+3. de taalinterface volledig is vertaald (structureel gecontroleerd in de werkversie);
+4. een praktijktest van laden en afspelen is geslaagd;
+5. de nieuwe audio door iemand die de betreffende taal beheerst is beluisterd en goedgekeurd.
 
 Er worden geen lege MP3's of tijdelijke stiltes gebruikt om ontbrekende audio te maskeren.
