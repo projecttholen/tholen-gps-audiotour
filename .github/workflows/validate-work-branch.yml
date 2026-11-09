@@ -1,0 +1,66 @@
+name: Validate Tholen work branch
+
+on:
+  push:
+    branches:
+      - improve/localized-stop-controls
+    paths:
+      - "index.html"
+      - "teksten-data-uk.js"
+      - "teksten/**"
+      - "audio/uk/**"
+      - "audio/ja/**"
+      - "audio/vi/**"
+      - "scripts/check-audio.js"
+      - "scripts/check-language-readiness.js"
+      - ".github/workflows/validate-work-branch.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path("index.html").read_text(encoding="utf-8")
+          inline = []
+          for chunk in html.split("<script")[1:]:
+              header, separator, tail = chunk.partition(">")
+              if not separator or "src=" in header.lower():
+                  continue
+              body, closing, _ = tail.partition("</script>")
+              if closing and body.strip():
+                  inline.append(body)
+          if not inline:
+              raise SystemExit("No inline application script found")
+          Path("/tmp/tholen-inline.js").write_text(inline[-1], encoding="utf-8")
+          PY
+          node --check /tmp/tholen-inline.js
+          node --check teksten-data-uk.js
+      - name: Check audio files and language readiness
+        run: |
+          node scripts/check-audio.js . uk,ja,vi
+          node scripts/check-language-readiness.js
+      - name: Check GPS arrival playback is present and Frisian is absent
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path("index.html").read_text(encoding="utf-8")
+          assert 'id="gpsAutoToggle"' in html, "GPS start/stop control missing"
+          assert "navigator.geolocation.watchPosition" in html, "Continuous GPS tracking missing"
+          assert "nearestDistance<=22" in html, "Stop arrival radius check missing"
+          assert "gpsCandidateFixes<2" in html, "Stable GPS fix confirmation missing"
+          assert "gpsAutoPlayedStops" in html, "Per-stop duplicate protection missing"
+          assert "function playStop(nr,card,automatic=false)" in html, "Audio player integration missing"
+          assert not any(x in html for x in ("Frysk", "Fries", "Frisian")), "Frisian reference found in website"
+          print("PASS GPS arrival playback structure and no Frisian references")
+          PY
