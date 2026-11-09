@@ -10,6 +10,10 @@ on:
       - ".github/workflows/generate-new-language-audio.yml"
   workflow_dispatch:
 
+concurrency:
+  group: tholen-audio-generation
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
