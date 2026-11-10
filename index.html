@@ -66,7 +66,12 @@ h1{font-family:Georgia,serif;margin:0 0 7px;font-size:28px}.hero p{margin:0;line
   #gpsAutoStatus{padding:3px 2px;line-height:1.4}
   #map{height:58vh;height:58svh;min-height:300px;max-height:560px;margin-bottom:12px}
   .card{padding:12px}
-  .stop-actions .btn{min-height:44px}
+  .stop-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .stop-actions .btn{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center}
+  .audio-fallback{display:block;width:100%;min-height:48px}
+  #map{scroll-margin-top:135px}
+  #stops article{scroll-margin-top:135px}
+  button,a.btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .language-gate-panel{padding:18px 14px}
   #languageChoices{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   #languageChoices .lang{min-width:0;overflow-wrap:anywhere}
