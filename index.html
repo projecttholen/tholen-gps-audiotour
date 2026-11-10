@@ -54,6 +54,27 @@ main{max-width:1100px;margin:auto;padding:14px}
 h1{font-family:Georgia,serif;margin:0 0 7px;font-size:28px}.hero p{margin:0;line-height:1.55}
 .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 13px;text-decoration:none;color:inherit;font-weight:600;cursor:pointer}
 #map{height:56vh;min-height:380px;border-radius:18px;border:1px solid var(--line);overflow:hidden;margin-bottom:14px}
+/* Mobiele schermen: knoppen goed aantikbaar en kaart passend bij de schermhoogte. */
+@media(max-width:799px){
+  header{padding:12px 12px 8px}
+  .brand{font-size:20px}
+  main{padding:10px}
+  .hero{padding:14px}
+  h1{font-size:clamp(23px,6vw,28px)}
+  .actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .actions>.btn,.actions>button,.actions>a{width:100%;min-height:46px;display:flex;align-items:center;justify-content:center;text-align:center;white-space:normal}
+  #gpsAutoStatus{padding:3px 2px;line-height:1.4}
+  #map{height:58vh;height:58svh;min-height:300px;max-height:560px;margin-bottom:12px}
+  .card{padding:12px}
+  .stop-actions .btn{min-height:44px}
+  .language-gate-panel{padding:18px 14px}
+  #languageChoices{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  #languageChoices .lang{min-width:0;overflow-wrap:anywhere}
+}
+@media(max-width:380px){
+  #languageChoices{grid-template-columns:1fr}
+  .lang-current{max-width:100%;white-space:normal}
+}
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin:9px 0}
 .stophead{display:flex;gap:11px;align-items:flex-start}.num{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
 .stoptitle{font-weight:750;font-size:16px}.small{font-size:13px;opacity:.7;margin-top:3px}
@@ -279,6 +300,15 @@ ROUTE_MAP_DATA.stops.forEach(s=>{
   stopMarkers.push(m);
 });
 document.getElementById("fit").onclick=()=>map.fitBounds(bounds,{padding:[25,25]});
+/* Mobiele browsers wijzigen de beschikbare hoogte bij adresbalk en schermrotatie. */
+let mapResizeTimer=null;
+function refreshMapLayout(){
+  if(mapResizeTimer!==null) clearTimeout(mapResizeTimer);
+  mapResizeTimer=setTimeout(()=>{map.invalidateSize(true);mapResizeTimer=null;},180);
+}
+window.addEventListener("resize",refreshMapLayout,{passive:true});
+window.addEventListener("orientationchange",()=>setTimeout(refreshMapLayout,350),{passive:true});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshMapLayout();});
 document.getElementById("start").onclick=()=>{document.getElementById("map").scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>map.fitBounds(bounds,{padding:[25,25]}),450);};
 
 const langbar=document.getElementById("langbar");
@@ -926,6 +956,7 @@ LANGS.forEach(([code,name,voice,flag]) => {
     // Leaflet was initialized while the map was hidden; force a fresh layout.
     setTimeout(() => {
       map.invalidateSize(true);
+      refreshMapLayout();
       if (walkStarted && routeDecision === "continue" && savedWalkView) {
         map.setView([savedWalkView.lat, savedWalkView.lng], savedWalkView.zoom, {animate:false});
         window.scrollTo({top:savedWalkView.scrollY,behavior:"auto"});
