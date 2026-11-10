@@ -306,10 +306,11 @@ function startGpsWalk() {
       gpsStatus.textContent = messages[error.code] || "GPS-fout: " + error.message;
       startButton.disabled = false;
       startButton.textContent = "▶ GPS OPNIEUW STARTEN";
-      if (error.code === 1 && gpsWatchId !== null) {
+      if (gpsWatchId !== null) {
         navigator.geolocation.clearWatch(gpsWatchId);
         gpsWatchId = null;
       }
+      gpsFirstFix = true;
     }, {
       enableHighAccuracy: true,
       maximumAge: 0,
@@ -863,6 +864,8 @@ document.getElementById("continueRoute").addEventListener("click", () => {
 });
 document.getElementById("restartRoute").addEventListener("click", () => {
   routeDecision = "restart";
+  automaticallyPlayedStops.clear();
+  gpsFirstFix = true;
   routeChoice.hidden = true;
   languageChoices.hidden = false;
 });
