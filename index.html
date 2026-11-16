@@ -27,9 +27,9 @@ header{padding:18px 18px 12px;background:var(--white);border-bottom:1px solid va
 /* De voorgelezen haltesteksten staan niet op de pagina; ze blijven beschikbaar via Audio. */
 #stops .text{display:none!important;}
 /* Bij elk nieuw bezoek eerst de taalkeuze tonen. */
-#languageGate{position:fixed;inset:0;z-index:5000;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto}
+#languageGate{position:fixed;inset:0;z-index:5000;background:var(--paper);display:flex;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 #languageGate[hidden]{display:none!important}
-.language-gate-panel{width:min(760px,100%);background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 8px 30px #00000012}
+.language-gate-panel{flex:0 0 auto;width:min(760px,100%);margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 8px 30px #00000012}
 .language-gate-title{font-family:Georgia,serif;font-size:clamp(25px,4vw,34px);font-weight:700;margin:0 0 8px;color:var(--ink);text-align:center}
 .language-gate-subtitle{text-align:center;margin:0 0 22px;color:var(--ink);font-size:17px}
 #languageChoices{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px}
