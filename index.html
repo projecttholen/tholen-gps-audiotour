@@ -404,7 +404,14 @@ async function loadPublicRatingStats() {
   const box = document.getElementById("publicRatingSummary");
   if (!box) return;
   try {
-    const data = await reviewJsonp({ action: "stats", _ts: Date.now() });
+    // Gebruik op mobiele browsers dezelfde iframe-verbinding als voor de reviews.
+    let data;
+    try {
+      data = await loadStatsViaIframe();
+    } catch (iframeError) {
+      console.warn("Tholen statistieken: iframe-route mislukt; JSONP-terugval wordt geprobeerd.", iframeError);
+      data = await reviewJsonp({ action: "stats", _ts: Date.now() });
+    }
     if (!data || data.ok !== true) throw new Error(data && data.error ? data.error : "Geen geldige beoordeling ontvangen.");
     const count = Number(data.count) || 0;
     const average = Number(data.average) || 0;
@@ -616,6 +623,41 @@ function loadReviewsViaIframe() {
       finish(reject, new Error("Ook de iframe-verbinding met de reviewserver gaf geen antwoord."));
     }, 12000);
     const query = new URLSearchParams({ action: "reviews", transport: "iframe", token, _ts: String(Date.now()) });
+    frame.src = PUBLIC_REVIEWS_WEB_APP_URL + "?" + query.toString();
+    document.body.appendChild(frame);
+  });
+}
+
+// Mobielvriendelijke iframe-route voor het ophalen van statistieken.
+function loadStatsViaIframe() {
+  return new Promise((resolve, reject) => {
+    const token = "tholen_stats_" + Date.now().toString(36) + "_" +
+      Math.random().toString(36).slice(2, 12);
+    const frame = document.createElement("iframe");
+    frame.style.display = "none";
+    let finished = false;
+    const cleanup = () => {
+      window.removeEventListener("message", onMessage);
+      clearTimeout(timeout);
+      frame.remove();
+    };
+    const finish = (fn, value) => {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      fn(value);
+    };
+    const onMessage = (event) => {
+      const data = event.data;
+      if (!data || data.channel !== "THOLEN_STATS" || data.token !== token ||
+          !data.payload || data.payload.phase !== "stats") return;
+      finish(resolve, data.payload.result);
+    };
+    window.addEventListener("message", onMessage);
+    const timeout = setTimeout(() => {
+      finish(reject, new Error("De iframe-verbinding voor statistieken gaf geen antwoord."));
+    }, 12000);
+    const query = new URLSearchParams({ action: "stats", transport: "iframe", token, _ts: String(Date.now()) });
     frame.src = PUBLIC_REVIEWS_WEB_APP_URL + "?" + query.toString();
     document.body.appendChild(frame);
   });
