@@ -423,8 +423,15 @@ async function loadApprovedReviews() {
 
   list.textContent = "Reviews laden…";
   try {
-    // Gebruik dezelfde bewezen JSONP-verbinding als voor het gemiddelde cijfer.
-    const data = await reviewJsonp({ action: "reviews", _ts: Date.now() });
+    // Mobiele browsers kunnen de Google Apps Script-redirect bij JSONP blokkeren.
+    // Probeer daarom eerst de eerder gebruikte iframe-verbinding; JSONP is terugval.
+    let data;
+    try {
+      data = await loadReviewsViaIframe();
+    } catch (iframeError) {
+      console.warn("Tholen reviews: iframe-route mislukt; JSONP-terugval wordt geprobeerd.", iframeError);
+      data = await reviewJsonp({ action: "reviews", _ts: Date.now() });
+    }
 
     if (data && data.ok === true && data.reviews &&
         !Array.isArray(data.reviews) &&
