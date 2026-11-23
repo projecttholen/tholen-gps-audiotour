@@ -664,18 +664,33 @@ function loadStatsViaIframe() {
 }
 
 // Voor reviews gebruiken we de status-API van het Apps Script; no-cors is hiervoor onvoldoende.
-function reviewJsonp(params){
+// Apps Script ContentService kan na de 302-redirect naar googleusercontent
+// tijdelijk een foutpagina geven. Probeer daarom een verse /exec-aanvraag opnieuw.
+function reviewJsonpOnce(params){
  return new Promise((resolve,reject)=>{
   const callbackName="tholenCallback_review_"+Math.random().toString(36).slice(2,12);
   const script=document.createElement("script");
+  let finished=false;
   const cleanup=()=>{delete window[callbackName];script.remove();};
-  const timeout=setTimeout(()=>{cleanup();reject(new Error("Geen antwoord van de reviewserver."));},12000);
-  window[callbackName]=data=>{clearTimeout(timeout);cleanup();resolve(data);};
-  const query=new URLSearchParams({...params,callback:callbackName});
+  const finish=(fn,value)=>{if(finished)return;finished=true;clearTimeout(timeout);cleanup();fn(value);};
+  const timeout=setTimeout(()=>finish(reject,new Error("Geen antwoord van de reviewserver.")),12000);
+  window[callbackName]=data=>finish(resolve,data);
+  const query=new URLSearchParams({...params,callback:callbackName,_retry:Date.now().toString(36)});
   script.src=GOOGLE_SHEETS_WEB_APP_URL+"?"+query.toString();
-  script.onerror=()=>{clearTimeout(timeout);cleanup();reject(new Error("De reviewserver is niet bereikbaar."));};
+  script.onerror=()=>finish(reject,new Error("De reviewserver gaf een fout bij het doorsturen."));
   document.head.appendChild(script);
  });
+}
+async function reviewJsonp(params){
+ let lastError;
+ for(let attempt=1;attempt<=3;attempt++){
+  try{return await reviewJsonpOnce(params);}
+  catch(error){
+   lastError=error;
+   if(attempt<3) await new Promise(resolve=>setTimeout(resolve,800*attempt));
+  }
+ }
+ throw lastError || new Error("De reviewserver is niet bereikbaar.");
 }
 async function submitReviewAndWait(lang,reviewText,rating){
  const requestId="review_"+Date.now().toString(36)+"_"+Math.random().toString(36).    slice(2,9);
