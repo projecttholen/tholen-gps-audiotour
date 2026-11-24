@@ -404,14 +404,13 @@ async function loadPublicRatingStats() {
   const box = document.getElementById("publicRatingSummary");
   if (!box) return;
   try {
-    // JSONP is de primaire route: een scriptverzoek volgt de Google Apps Script-redirect
-    // zonder dat een verborgen iframe en postMessage nodig zijn.
+    // Op mobiel eerst de iframe-verbinding gebruiken; geen lange JSONP-wachttijd.
     let data;
     try {
-      data = await reviewJsonp({ action: "stats", _ts: Date.now() });
-    } catch (jsonpError) {
-      console.warn("Tholen statistieken: JSONP mislukt; iframe-terugval wordt geprobeerd.", jsonpError);
       data = await loadStatsViaIframe();
+    } catch (iframeError) {
+      console.warn("Tholen statistieken: iframe mislukt; JSONP wordt geprobeerd.", iframeError);
+      data = await reviewJsonp({ action: "stats", _ts: Date.now() });
     }
     if (!data || data.ok !== true) throw new Error(data && data.error ? data.error : "Geen geldige beoordeling ontvangen.");
     const count = Number(data.count) || 0;
@@ -431,13 +430,13 @@ async function loadApprovedReviews() {
 
   list.textContent = "Reviews laden…";
   try {
-    // JSONP is de primaire route; iframe/postMessage blijft beschikbaar als terugval.
+    // Op mobiel eerst iframe/postMessage; JSONP is alleen terugval.
     let data;
     try {
-      data = await reviewJsonp({ action: "reviews", _ts: Date.now() });
-    } catch (jsonpError) {
-      console.warn("Tholen reviews: JSONP mislukt; iframe-terugval wordt geprobeerd.", jsonpError);
       data = await loadReviewsViaIframe();
+    } catch (iframeError) {
+      console.warn("Tholen reviews: iframe mislukt; JSONP wordt geprobeerd.", iframeError);
+      data = await reviewJsonp({ action: "reviews", _ts: Date.now() });
     }
 
     if (data && data.ok === true && data.reviews &&
